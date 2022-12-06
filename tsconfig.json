@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "preserveConstEnums": true,
+    "resolveJsonModule": true,
+    "target": "ES5",
+    "module": "CommonJS",
+    "lib": ["ES5", "ES6"],
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "Node",
+    "typeRoots": ["node_modules/@types", "types"],
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules", "test", "types"]
+}
