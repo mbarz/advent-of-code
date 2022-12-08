@@ -18,11 +18,15 @@ type Instructions = Instruction[];
 type Stack = string[];
 type Stacks = Stack[];
 
+function isDefined<T>(o: T | undefined | null): o is T {
+  return o != null;
+}
+
 function parse(s: string): { instructions: Instructions; stacks: Stacks } {
   const lines = s.split('\n');
   const instructions = lines
     .map((l) => l.match(/move (\d+) from (\d+) to (\d+)/))
-    .filter((res): res is string[] => res != null)
+    .filter(isDefined)
     .map(([, count, source, target]) => {
       return [Number(count), Number(source), Number(target)] as const;
     });

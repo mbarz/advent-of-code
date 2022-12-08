@@ -26,7 +26,6 @@ const exampleLines = [
   '7214296 k',
 ];
 const exampleInput = exampleLines.join('\n');
-const input = readFileSync(__dirname + '/07.txt', 'utf-8');
 
 type File = { name: string; size: number };
 
@@ -165,24 +164,28 @@ describe('Day 7', () => {
     ]);
   });
 
-  it.each([
-    [exampleInput, 95437],
-    [input, 1611443],
-  ])('should solve part 1', (input, expected) => {
+  it('should solve part 1', () => {
+    const state = buildState(exampleInput);
+    const res = flattenDirs(state.root)
+      .map((d) => dirSize(d))
+      .filter((s) => s <= 100000)
+      .reduce((a, b) => a + b, 0);
+    expect(res).toEqual(95437);
+  });
+
+  it('should solve part 1 with full data', () => {
+    const input = readFileSync(__dirname + '/07.txt', 'utf-8');
     const state = buildState(input);
     const res = flattenDirs(state.root)
       .map((d) => dirSize(d))
       .filter((s) => s <= 100000)
       .reduce((a, b) => a + b, 0);
-    expect(res).toEqual(expected);
+    expect(res).toEqual(1611443);
   });
 
-  it.each([
-    [exampleInput, 24933642],
-    [input, 2086088],
-  ])('should solve part 2', (input, expected) => {
+  it('should solve part 2', () => {
     // it seems not to be mzzpfnr
-    const state = buildState(input);
+    const state = buildState(exampleInput);
     const total = 70000000;
     const needed = 30000000;
     const remaining = total - dirSize(state.root);
@@ -195,6 +198,24 @@ describe('Day 7', () => {
       .filter(({ size }) => size >= diff);
 
     deleteCandidates.sort((a, b) => a.size - b.size);
-    expect(deleteCandidates[0].size).toEqual(expected);
+    expect(deleteCandidates[0].size).toEqual(24933642);
+  });
+
+  it('should solve part 2 with full data', () => {
+    // it seems not to be mzzpfnr
+    const state = buildState(readFileSync(__dirname + '/07.txt', 'utf-8'));
+    const total = 70000000;
+    const needed = 30000000;
+    const remaining = total - dirSize(state.root);
+    const diff = needed - remaining;
+    const deleteCandidates = flattenDirs(state.root)
+      .map((d) => ({
+        name: d.name,
+        size: dirSize(d),
+      }))
+      .filter(({ size }) => size >= diff);
+
+    deleteCandidates.sort((a, b) => a.size - b.size);
+    expect(deleteCandidates[0].size).toEqual(2086088);
   });
 });
