@@ -1,5 +1,11 @@
-import { readFileSync } from 'fs';
-import { state, move, moveMultiple, parseInstructions } from './09';
+import {
+  move,
+  moveMultiple,
+  paintState,
+  paintVisitedByTail,
+  parseInstructions,
+  state,
+} from './09';
 
 describe('Day 9', () => {
   it('should move head', () => {
@@ -28,7 +34,7 @@ describe('Day 9', () => {
   ])('should pull the tail %s', (_s, moves, endPos) => {
     let s = state({});
     moves.split('').forEach((direction) => (s = move(s, direction as any)));
-    expect(s.tail).toEqual(endPos);
+    expect(s.knots[0]).toEqual(endPos);
   });
 
   it('should track tail positions', () => {
@@ -45,19 +51,30 @@ describe('Day 9', () => {
     ]);
   });
 
-  const exampleInput = [
-    'R 4',
-    'U 4',
-    'L 3',
-    'D 1',
-    'R 4',
-    'D 1',
-    'L 5',
-    'R 2',
-  ].join('\n');
+  function parse(s: string) {
+    const lines = (
+      s.match(/\w\d+/g)?.map((p) => p.substring(0, 1) + ' ' + p.substring(1)) ||
+      []
+    ).join('\n');
+    return parseInstructions(lines);
+  }
 
   it('should move multiple', () => {
-    const s = moveMultiple(state(), parseInstructions(exampleInput));
+    const s = moveMultiple(state(), parse('R4U4L3D1R4D1L5R2'));
     expect(s.visitedByTail).toHaveLength(13);
+  });
+
+  it('should move multiple knots on first example', () => {
+    const s = moveMultiple(state({ knotCount: 10 }), parse('R4U4L3D1R4D1L5R2'));
+    expect(s.visitedByTail).toHaveLength(1);
+  });
+
+  it('should move multiple knots on bigger example', () => {
+    const start = { x: 11, y: 21 - 16 };
+    let s = state({ start, knotCount: 10 });
+    s = moveMultiple(s, parse('R5U8L8D3R17D10L25U20'));
+    paintState(s, [26, 21]);
+    paintVisitedByTail(s);
+    expect(s.visitedByTail).toHaveLength(36);
   });
 });
