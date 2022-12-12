@@ -14,4 +14,5 @@ console.log(sum(res1));
 cpu = new CPU();
 cpu.push(...input.split('\n'));
 const crt = new CRT(cpu);
+crt.char = '█';
 console.log(crt.draw());

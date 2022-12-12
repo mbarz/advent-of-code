@@ -1,11 +1,13 @@
 import { CPU } from './cpu';
 
 export class CRT {
+  char = '#';
+
   constructor(private readonly cpu: CPU) {}
 
   drawAt(n: number): string {
     const x = this.cpu.x;
-    return Math.abs(x - n) <= 1 ? '#' : '.';
+    return Math.abs(x - n) <= 1 ? this.char : '.';
   }
 
   draw(ticks?: number) {
