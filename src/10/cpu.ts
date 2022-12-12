@@ -1,6 +1,6 @@
 export class CPU {
   public x = 1;
-  private stack: ((x: number) => number)[] = [];
+  stack: ((x: number) => number)[] = [];
 
   tick(cycles = 1) {
     for (let i = 0; i < cycles; ++i) {

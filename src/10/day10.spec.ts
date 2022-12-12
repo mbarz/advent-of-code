@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { sum } from '../util/sum';
 import { CPU, collectSignalStrengthAt, interestingCycles } from './cpu';
+import { CRT } from './crt';
 
 describe('Day 10', () => {
   let exampleInput: string;
@@ -45,5 +46,29 @@ describe('Day 10', () => {
     const res = collectSignalStrengthAt(cpu, interestingCycles);
     expect(res).toEqual([420, 1140, 1800, 2940, 2880, 3960]);
     expect(sum(res)).toEqual(13140);
+  });
+
+  function draw(commands: string[], ticks?: number) {
+    const cpu = new CPU();
+    cpu.push(...commands);
+    const crt = new CRT(cpu);
+    return crt.draw(ticks);
+  }
+
+  it('should draw example', () => {
+    expect(draw(exampleInstructions, 3)).toEqual('##.');
+    expect(draw(exampleInstructions, 4)).toEqual('##..');
+    expect(draw(exampleInstructions, 21)).toEqual('##..##..##..##..##..#');
+    const full = draw(exampleInstructions);
+    expect(full).toEqual(
+      [
+        '##..##..##..##..##..##..##..##..##..##..',
+        '###...###...###...###...###...###...###.',
+        '####....####....####....####....####....',
+        '#####.....#####.....#####.....#####.....',
+        '######......######......######......####',
+        '#######.......#######.......#######.....',
+      ].join('\n')
+    );
   });
 });
