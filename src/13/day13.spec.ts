@@ -11,7 +11,7 @@ import {
   parsePackets,
 } from './day13';
 
-describe.only('Day 13', () => {
+describe('Day 13', () => {
   let exampleInput = '';
   let examplePairs: Pair[] = [];
   let examplePackets: Packet[] = [];
