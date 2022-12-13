@@ -2,33 +2,27 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import {
   checkPacket,
-  comparePackets,
+  compare,
+  buildPairs,
   getDecoderKey,
   indicesOfCorrectPairs,
   Packet,
   Pair,
   parsePackets,
-  parsePairs,
 } from './day13';
 
 describe.only('Day 13', () => {
   let exampleInput = '';
   let examplePairs: Pair[] = [];
   let examplePackets: Packet[] = [];
-  let puzzlePackets: Packet[] = [];
 
-  beforeAll(() => {
+  beforeEach(() => {
     exampleInput = readFileSync(
       join(__dirname, 'day13-example-input.txt'),
       'utf-8'
     );
-    examplePairs = parsePairs(exampleInput);
     examplePackets = parsePackets(exampleInput);
-    const puzzleInput = readFileSync(
-      join(__dirname, 'day13-puzzle-input.txt'),
-      'utf-8'
-    );
-    puzzlePackets = parsePackets(puzzleInput);
+    examplePairs = buildPairs(examplePackets);
   });
 
   it('should parse', () => {
@@ -69,15 +63,9 @@ describe.only('Day 13', () => {
   });
 
   it('should return indeces of correct pairs', () => {
-    expect(indicesOfCorrectPairs(examplePairs)).toEqual([1, 2, 4, 6]);
-  });
-
-  it('should sort', () => {
-    const elements = [[[4, 4], 4, 4, 4], [[4, 4], 4, 4], [], [[]]];
-    expect(comparePackets(elements[0], elements[1])).toEqual(1);
-    expect(comparePackets(elements[1], elements[0])).toEqual(-1);
-    elements.sort(comparePackets);
-    expect(elements).toEqual([[], [[]], [[4, 4], 4, 4], [[4, 4], 4, 4, 4]]);
+    const indices = indicesOfCorrectPairs(examplePairs);
+    expect(indices).toHaveLength(4);
+    expect(indices).toEqual([1, 2, 4, 6]);
   });
 
   it('should sort', () => {
@@ -86,15 +74,17 @@ describe.only('Day 13', () => {
       [1, 1, 5, 1, 1],
     ];
     const [a, b] = arr;
-    expect(comparePackets(a, b)).toEqual(-1);
-    expect(comparePackets(b, a)).toEqual(1);
-    arr.sort(comparePackets);
+    expect(compare(a, b)).toEqual(-1);
+    expect(compare(b, a)).toEqual(1);
+    arr.sort(compare);
     expect(arr).toEqual([a, b]);
   });
 
   it('should sort packets', () => {
     const packets = [...examplePackets, [[2]], [[6]]];
-    packets.sort(comparePackets);
+
+    packets.sort((a, b) => compare(a, b));
+
     expect(packets.map((e) => JSON.stringify(e))).toEqual(
       [
         [],
@@ -120,14 +110,14 @@ describe.only('Day 13', () => {
   });
 
   it('should get decoder key', () => {
-    expect(getDecoderKey(examplePackets)).toEqual(140);
+    expect(getDecoderKey([...examplePackets])).toEqual(140);
   });
 
   it('should solve complicated', () => {
     const [a, b] = parsePackets(
       ['[[[1]],[[[],[],4]]]', '[[[]],[[[],[6,0,7,9,7]],5]]'].join('\n')
     );
-    expect(comparePackets(a, b)).toEqual(-1);
-    expect(comparePackets(b, a)).toEqual(1);
+    expect(compare(a, b)).toEqual(1);
+    expect(compare(b, a)).toEqual(-1);
   });
 });
