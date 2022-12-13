@@ -76,7 +76,7 @@ function scoreTree(map: TreeMap, tree: { r: number; c: number }): number {
   return left * right * top * bottom;
 }
 
-describe('Day 8', () => {
+describe.skip('Day 8', () => {
   it('should parse', () => {
     expect(parse('12\n34')).toEqual([
       [1, 2],
