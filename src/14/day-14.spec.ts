@@ -21,7 +21,6 @@ describe('Day 14', () => {
   it('should scan', () => {
     const cave = exampleCave;
     drawCave(cave);
-    expect(cave.solids).toHaveLength(20);
     expect(Object.keys(cave.map)).toHaveLength(20);
     expect(Object.keys(cave.map)).toEqual([
       '498,4',
@@ -50,8 +49,8 @@ describe('Day 14', () => {
   it('should drop sand into cave', () => {
     const cave = exampleCave;
     dropSandIntoCave(cave, 500);
-    expect(cave.solids).toHaveLength(21);
-    expect(cave.solids[20]).toEqual({ kind: 'sand', x: 500, y: 8 });
+    expect(Object.keys(cave.map)).toHaveLength(21);
+    expect(cave.map['500,8']).toEqual('o');
   });
 
   it('should drop more sand into cave', () => {
@@ -62,12 +61,12 @@ describe('Day 14', () => {
     dropSandIntoCave(cave, outlet);
     dropSandIntoCave(cave, outlet);
     dropSandIntoCave(cave, outlet);
-    expect(cave.solids).toHaveLength(25);
-    expect(cave.solids[20]).toEqual({ kind: 'sand', x: 500, y: 8 });
-    expect(cave.solids[21]).toEqual({ kind: 'sand', x: 499, y: 8 });
-    expect(cave.solids[22]).toEqual({ kind: 'sand', x: 501, y: 8 });
-    expect(cave.solids[23]).toEqual({ kind: 'sand', x: 500, y: 7 });
-    expect(cave.solids[24]).toEqual({ kind: 'sand', x: 498, y: 8 });
+    expect(Object.keys(cave.map)).toHaveLength(25);
+    expect(
+      Object.entries(cave.map)
+        .filter(([, value]) => value === 'o')
+        .map(([key]) => key)
+    ).toEqual(['500,8', '499,8', '501,8', '500,7', '498,8']);
   });
 
   it('should drop till abyss', () => {
