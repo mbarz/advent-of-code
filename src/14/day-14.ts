@@ -6,6 +6,7 @@ export type Solid = {
 
 export type Cave = {
   solids: Solid[];
+  map: Record<string, string>;
 };
 
 export function scanCave(input: string): Cave {
@@ -33,29 +34,34 @@ export function scanCave(input: string): Cave {
       }
     }
   }
-  return { solids };
+  const map: Record<string, string> = {};
+  solids.forEach((s) => (map[[s.x, s.y].join(',')] = '#'));
+  return { solids, map };
 }
 
-function getCaveElement(cave: Cave, pos: { x: number; y: number }): string {
-  const solid = cave.solids.find((s) => s.x === pos.x && s.y === pos.y);
-  if (solid?.kind === 'sand') return 'o';
-  else if (solid?.kind === 'stone') return '#';
-  return '.';
+function getCaveElement(cave: Cave, x: number, y: number): string {
+  return cave.map[sKey(x, y)] || '.';
 }
 
 export function getMaxY(cave: Cave): number {
-  return Math.max(...cave.solids.map((s) => s.y));
+  return Math.max(
+    ...cave.solids.filter((s) => s.kind === 'stone').map((s) => s.y)
+  );
 }
 
-export function dropSandIntoCave(cave: Cave, start: { x: number; y: number }) {
-  const pos = { ...start };
+export function sKey(x: number, y: number) {
+  return [x, y].join(',');
+}
+
+export function dropSandIntoCave(cave: Cave, x: number) {
+  const pos = { x, y: 0 };
   let moved = true;
   const bottom = getMaxY(cave);
   do {
     moved = false;
-    const below = getCaveElement(cave, { x: pos.x, y: pos.y + 1 });
-    const left = getCaveElement(cave, { x: pos.x - 1, y: pos.y + 1 });
-    const right = getCaveElement(cave, { x: pos.x + 1, y: pos.y + 1 });
+    const below = getCaveElement(cave, pos.x, pos.y + 1);
+    const left = getCaveElement(cave, pos.x - 1, pos.y + 1);
+    const right = getCaveElement(cave, pos.x + 1, pos.y + 1);
     if (below === '.') {
       pos.y++;
       moved = true;
@@ -71,31 +77,53 @@ export function dropSandIntoCave(cave: Cave, start: { x: number; y: number }) {
   } while (moved && pos.y < bottom + 1);
 
   cave.solids.push({ kind: 'sand', x: pos.x, y: pos.y });
+  cave.map[sKey(pos.x, pos.y)] = 'o';
 }
 
 export function drawCave(cave: Cave) {
   const minY = Math.min(...cave.solids.map((s) => s.y));
-  const minX = Math.min(...cave.solids.map((s) => s.x));
+  let minX = Math.min(...cave.solids.map((s) => s.x));
   const maxY = Math.max(...cave.solids.map((s) => s.y));
-  const maxX = Math.max(...cave.solids.map((s) => s.x));
+  let maxX = Math.max(...cave.solids.map((s) => s.x));
+
+  const cut = maxX - minX - 100;
+  if (cut > 0) {
+    minX += cut / 2;
+    maxX -= cut / 2;
+  }
+
   const map = Array.from({ length: maxY - minY + 1 }, () =>
     Array.from({ length: maxX - minX + 1 }, () => '.')
   );
-  cave.solids.forEach((solid) => {
-    map[solid.y - minY][solid.x - minX] = solid.kind === 'sand' ? 'o' : '#';
-  });
+  cave.solids
+    .filter((s) => s.x <= maxX && s.x >= minX)
+    .forEach((solid) => {
+      map[solid.y - minY][solid.x - minX] = solid.kind === 'sand' ? 'o' : '#';
+    });
   console.log(map.map((l) => l.join('')).join('\n'));
 }
 
-export function fillUntilAbyss(cave: Cave, start: { x: number; y: number }) {
+export function fillUntilAbyss(cave: Cave, x: number) {
   const maxY = getMaxY(cave);
   let count = 0;
   let stop = false;
   do {
-    dropSandIntoCave(cave, start);
+    dropSandIntoCave(cave, x);
     const last = cave.solids[cave.solids.length - 1];
     stop = last.y > maxY;
     count++;
   } while (count < 100000 && !stop);
   return count - 1;
+}
+
+export function fillUntilEnd(cave: Cave, x: number) {
+  let count = 0;
+  let stop = false;
+  do {
+    dropSandIntoCave(cave, x);
+    const last = cave.solids[cave.solids.length - 1];
+    stop = last.y === 0;
+    count++;
+  } while (count < 100000 && !stop);
+  return count;
 }
