@@ -1,7 +1,7 @@
 from AA
 
 BB 1 13
-CC 2 13
+CC 2  2
 DD 1 20
 EE 2  3
 HH 5 22
