@@ -1,0 +1,40 @@
+from AA
+
+BB 1 13
+CC 2 13
+DD 1 20
+EE 2  3
+HH 5 22
+JJ 2 21
+
+--> DD 1 20
+
+BB 2 13
+CC 1  2
+EE 1  3
+HH 4 22
+JJ 3 21
+
+--> BB 2 13
+
+CC 1  2
+EE 1  3
+HH 4  22
+JJ 3  21
+
+--> JJ 3 21
+
+CC 4  2
+EE 4  3 
+HH 7 22
+
+--> HH
+
+CC 4  2
+EE 3  3
+
+--> EE
+
+CC 1  2
+
+--> CC

@@ -14,13 +14,6 @@ describe('Day 15', () => {
     expect(res.sensors[6].closestBeacon).toEqual({ x: 2, y: 10 });
   });
 
-  function range(s: number, e: number, opts: { exclude?: number[] } = {}) {
-    const exclude = opts.exclude || [];
-    return Array.from({ length: e - s + 1 }, (_, i) => s + i).filter(
-      (n) => !exclude.includes(n)
-    );
-  }
-
   it('should get fields in row from sensor', () => {
     const sensors = parseFile('example').sensors;
     expect(getFieldsInRowFromSensor(sensors[6], -4)).toEqual(undefined);
