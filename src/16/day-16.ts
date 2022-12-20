@@ -10,6 +10,7 @@ type Room = {
 };
 
 type Graph = Record<string, string[]>;
+
 type FlowRates = Record<string, number>;
 
 export type ValvePuzzleInput = {
@@ -28,13 +29,21 @@ export class ValveSolver {
   graph: Graph;
   flowRates: FlowRates;
 
+  maxOpen = 0;
+
   pathCache: Record<string, string[]> = {};
-  solutionCache: Record<string, number> = {};
+  solutionCache: Record<string, { released: number; path: string[] }> = {};
 
   constructor(file: string) {
     const parsed = readValveInputFile(file);
     this.graph = parsed.graph;
     this.flowRates = parsed.flowRates;
+
+    const keys = Object.keys(this.graph);
+    keys.sort((a, b) => a.localeCompare(b));
+
+    this.maxOpen = parsed.rooms.filter((r) => r.flowRate > 0).length;
+    console.log({ maxOpen: this.maxOpen });
   }
 
   solve(
@@ -43,7 +52,7 @@ export class ValveSolver {
       timeLeft?: number;
       open?: string[];
     } = {}
-  ): number {
+  ): { released: number; path: string[] } {
     const { current = 'AA', timeLeft = 30, open = [] } = args;
 
     open.sort((a, b) => a.localeCompare(b));
@@ -54,81 +63,78 @@ export class ValveSolver {
     }
 
     const flowRate = this.flowRates[current];
+
+    let result = { released: 0, path: [] as string[] };
     if (flowRate > 0 && !open.includes(current)) {
-      return (
-        flowRate * (timeLeft - 1) +
-        this.solve({
-          ...args,
-          timeLeft: timeLeft - 1,
-          open: [...open, current],
-        })
-      );
+      const sub = this.solve({
+        ...args,
+        timeLeft: timeLeft - 1,
+        open: [...open, current],
+      });
+      result = {
+        released: flowRate * (timeLeft - 1) + sub.released,
+        path: [`open ${current}`, ...sub.path],
+      };
     }
-    let result = 0;
-    const options = this.getValveOptions({ current, open }).filter(
-      (o) => o.path.length < timeLeft
-    );
+    const options = this.getValveOptions({
+      current,
+      open: [...open, current],
+    }).filter((o) => o.path.length < timeLeft);
     if (options.length < 1) {
-      return 0;
+      return result;
     }
     for (const next of options) {
-      result = Math.max(
-        result,
-        this.solve({
-          ...args,
-          current: next.key,
-          timeLeft: timeLeft - next.path.length,
-        })
-      );
+      const sub = this.solve({
+        ...args,
+        current: next.key,
+        timeLeft: timeLeft - next.path.length,
+      });
+      if (sub.released >= result.released) {
+        result = { ...sub, path: [next.key, ...sub.path] };
+      }
     }
     this.solutionCache[solutionKey] = result;
     return result;
   }
 
-  cache: Record<string, { released: number }> = {};
+  cache: Map<string, number> = new Map();
+  // cacheWithTime: Map<string, { time: number; value: number }> = new Map();
 
-  solve2(
-    args: {
-      current?: string;
-      timeLeft?: number;
-      open?: string[];
-    } = {}
-  ): { released: number } {
-    const { current = 'AA', timeLeft = 30, open = [] } = args;
-
-    if (timeLeft === 0) {
-      return { released: 0 };
+  solveStepByStep(
+    current: string,
+    open: string[],
+    timeLeft: number,
+    helpers: number
+  ): number {
+    if (timeLeft < 1) {
+      return helpers > 0
+        ? this.solveStepByStep('AA', open, 26, helpers - 1)
+        : 0;
     }
 
-    open.sort((a, b) => a.localeCompare(b));
-    const solutionKey = `${current};${timeLeft};${open.join(',')}`;
+    const key = `${helpers};${current};${timeLeft};${open.join(',')}`;
 
-    if (this.solutionCache[solutionKey]) {
-      return this.cache[solutionKey];
+    if (this.cache.has(key)) {
+      return this.cache.get(key) as number;
     }
 
     const flowRate = this.flowRates[current];
+    let result = 0;
     if (flowRate > 0 && !open.includes(current)) {
-      const sub = this.solve2({
-        current,
-        timeLeft: timeLeft - 1,
-        open: [...open, current],
-      });
-      return { released: flowRate * (timeLeft - 1) + sub.released };
+      const newOpen = [...open, current].sort((a, b) => a.localeCompare(b));
+      const sub = this.solveStepByStep(current, newOpen, timeLeft - 1, helpers);
+      result = flowRate * (timeLeft - 1) + sub;
     }
-    let result = { released: 0 };
     const options = this.graph[current];
     for (const next of options) {
-      const sub = this.solve2({
-        current: next,
-        timeLeft: timeLeft - 1,
-        open,
-      });
-      if (sub.released > result.released) {
-        result = sub;
-      }
+      const sub = this.solveStepByStep(next, open, timeLeft - 1, helpers);
+      if (sub >= result) result = sub;
     }
-    this.cache[solutionKey] = result;
+    this.cache.set(key, result);
+    const cacheSize = this.cache.size;
+    if (cacheSize % 100000 === 0) {
+      console.log(`Cached ${cacheSize} states`);
+    }
     return result;
   }
 
