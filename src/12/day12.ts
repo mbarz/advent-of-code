@@ -69,20 +69,37 @@ export const shortestPath = (
   startNode: string,
   stopNode: string,
   graph: Graph
-): { shortestDistance: number } => {
+): {
+  shortestDistance: number;
+  path: string[];
+} => {
   const visited = new Set<string>();
-  const queue: { node: string; dist: number }[] = [];
-  queue.push({ node: startNode, dist: 0 });
+  type QueueItem = {
+    node: string;
+    dist: number;
+    path: string[];
+  };
+  const queue: QueueItem[] = [];
+  const history: QueueItem[] = [];
+  queue.push({ node: startNode, dist: 0, path: [] });
   visited.add(startNode);
   while (queue.length > 0) {
-    const { node, dist } = queue.shift() as { node: string; dist: number };
-    if (node === stopNode) return { shortestDistance: dist };
-    for (const neighbour of graph[node]) {
+    const current = queue.shift() as QueueItem;
+    history.push(current);
+    if (current.node === stopNode) {
+      return { shortestDistance: current.dist, path: current.path };
+    }
+    for (const neighbour of graph[current.node]) {
       if (!visited.has(neighbour)) {
-        queue.push({ node: neighbour, dist: dist + 1 });
+        queue.push({
+          node: neighbour,
+          dist: current.dist + 1,
+          path: [...current.path, neighbour],
+        });
         visited.add(neighbour);
       }
     }
   }
-  return { shortestDistance: -1 };
+
+  return { shortestDistance: -1, path: [] };
 };

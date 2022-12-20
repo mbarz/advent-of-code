@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { shortestPath } from '../12/day12';
 import { isDefinded } from '../util/isDefined';
-import { sum } from '../util/sum';
 
 type Room = {
   key: string;
@@ -9,7 +9,160 @@ type Room = {
   tunnelKeys: string[];
 };
 
-export function readValveInputFile(file: string): Room[] {
+type Graph = Record<string, string[]>;
+type FlowRates = Record<string, number>;
+
+export type ValvePuzzleInput = {
+  rooms: Room[];
+  graph: Graph;
+  flowRates: FlowRates;
+};
+
+export type Move = {
+  move: string;
+  rating: number;
+  then?: Move;
+};
+
+export class ValveSolver {
+  graph: Graph;
+  flowRates: FlowRates;
+
+  pathCache: Record<string, string[]> = {};
+  solutionCache: Record<string, number> = {};
+
+  constructor(file: string) {
+    const parsed = readValveInputFile(file);
+    this.graph = parsed.graph;
+    this.flowRates = parsed.flowRates;
+  }
+
+  solve(
+    args: {
+      current?: string;
+      timeLeft?: number;
+      open?: string[];
+    } = {}
+  ): number {
+    const { current = 'AA', timeLeft = 30, open = [] } = args;
+
+    open.sort((a, b) => a.localeCompare(b));
+    const solutionKey = `${current};${timeLeft};${open.join(',')}`;
+
+    if (this.solutionCache[solutionKey]) {
+      return this.solutionCache[solutionKey];
+    }
+
+    const flowRate = this.flowRates[current];
+    if (flowRate > 0 && !open.includes(current)) {
+      return (
+        flowRate * (timeLeft - 1) +
+        this.solve({
+          ...args,
+          timeLeft: timeLeft - 1,
+          open: [...open, current],
+        })
+      );
+    }
+    let result = 0;
+    const options = this.getValveOptions({ current, open }).filter(
+      (o) => o.path.length < timeLeft
+    );
+    if (options.length < 1) {
+      return 0;
+    }
+    for (const next of options) {
+      result = Math.max(
+        result,
+        this.solve({
+          ...args,
+          current: next.key,
+          timeLeft: timeLeft - next.path.length,
+        })
+      );
+    }
+    this.solutionCache[solutionKey] = result;
+    return result;
+  }
+
+  cache: Record<string, { released: number }> = {};
+
+  solve2(
+    args: {
+      current?: string;
+      timeLeft?: number;
+      open?: string[];
+    } = {}
+  ): { released: number } {
+    const { current = 'AA', timeLeft = 30, open = [] } = args;
+
+    if (timeLeft === 0) {
+      return { released: 0 };
+    }
+
+    open.sort((a, b) => a.localeCompare(b));
+    const solutionKey = `${current};${timeLeft};${open.join(',')}`;
+
+    if (this.solutionCache[solutionKey]) {
+      return this.cache[solutionKey];
+    }
+
+    const flowRate = this.flowRates[current];
+    if (flowRate > 0 && !open.includes(current)) {
+      const sub = this.solve2({
+        current,
+        timeLeft: timeLeft - 1,
+        open: [...open, current],
+      });
+      return { released: flowRate * (timeLeft - 1) + sub.released };
+    }
+    let result = { released: 0 };
+    const options = this.graph[current];
+    for (const next of options) {
+      const sub = this.solve2({
+        current: next,
+        timeLeft: timeLeft - 1,
+        open,
+      });
+      if (sub.released > result.released) {
+        result = sub;
+      }
+    }
+    this.cache[solutionKey] = result;
+    return result;
+  }
+
+  getValveOptions(args: {
+    current: string;
+    open: string[];
+  }): { key: string; flowRate: number; path: string[] }[] {
+    return Object.keys(this.graph)
+      .filter((v) => !args.open.includes(v))
+      .filter((v) => this.flowRates[v] > 0)
+      .map((v) => {
+        const path = this.getPathToRoom(args.current, v);
+        if (path == null) return undefined;
+        return {
+          key: v,
+          flowRate: this.flowRates[v],
+          path: path,
+        };
+      })
+      .filter(isDefinded);
+  }
+
+  getPathToRoom(a: string, b: string): string[] | undefined {
+    const key = `${a},${b}`;
+    if (this.pathCache[key]) {
+      return this.pathCache[key];
+    }
+    const path = shortestPath(a, b, this.graph).path;
+    this.pathCache[key] = path;
+    return path;
+  }
+}
+
+export function readValveInputFile(file: string): ValvePuzzleInput {
   const input = readFileSync(
     join(__dirname, `day-16-${file}-input.txt`),
     'utf-8'
@@ -29,176 +182,13 @@ export function readValveInputFile(file: string): Room[] {
       tunnelTargets: [],
     }));
 
-  return rooms;
+  const flowRates = rooms.reduce((p, c) => ({ ...p, [c.key]: c.flowRate }), {});
+  const graph = buildGraph(rooms);
+  return { rooms, graph, flowRates };
 }
 
-type RoomDistances = Record<string, Record<string, number>>;
-
-export function calcDistances(rooms: Room[]): RoomDistances {
-  const d: RoomDistances = {};
-  for (const room of rooms) {
-    d[room.key] = {};
-    for (const other of rooms) {
-      d[room.key][other.key] = getRoomDistance(rooms, room.key, other.key);
-    }
-  }
-  return d;
-}
-
-export function getRoomDistance(
-  rooms: Room[],
-  a: string,
-  b: string,
-  visited: string[] = []
-): number {
-  if (a === b) return 0;
-  const ra = getRoom(rooms, a);
-  if (ra.tunnelKeys.includes(b)) return 1;
-  const other = ra.tunnelKeys.filter((key) => !visited.includes(key));
-  if (other.length < 1) return Number.POSITIVE_INFINITY;
-  const distances = other.map(
-    (o) => getRoomDistance(rooms, o, b, [...visited, a]) + 1
-  );
-  return Math.min(...distances);
-}
-
-export function getPathToRoom(
-  rooms: Room[],
-  a: string,
-  b: string,
-  visited: string[] = []
-): string[] | undefined {
-  if (a === b) return [];
-  const ra = getRoom(rooms, a);
-  if (ra.tunnelKeys.includes(b)) return [b];
-
-  const variants = ra.tunnelKeys
-    .filter((key) => !visited.includes(key))
-    .map((o) => {
-      const path = getPathToRoom(rooms, o, b, [...visited, a]);
-      if (path == null) return undefined;
-      return [o, ...path];
-    })
-    .filter(isDefinded)
-    .filter((o) => isDefinded(o));
-
-  if (variants.length < 1) return undefined;
-
-  variants.sort((v1, v2) => v1.length - v2.length);
-  return variants[0];
-}
-
-function getRoom(rooms: Room[], key: string): Room {
-  return rooms.find((r) => r.key === key) as Room;
-}
-
-export type Move = {
-  move: string;
-  rating: number;
-  then?: Move;
-};
-
-export function getValveOptions(args: {
-  rooms: Room[];
-  current: string;
-  open: string[];
-}): { key: string; flowRate: number; path: string[] }[] {
-  return args.rooms
-    .filter((r) => !args.open.includes(r.key))
-    .filter((r) => r.flowRate > 0)
-    .map((r) => {
-      const path = getPathToRoom(args.rooms, args.current, r.key);
-      if (path == null) return undefined;
-      return {
-        key: r.key,
-        flowRate: r.flowRate,
-        path: path,
-      };
-    })
-    .filter(isDefinded);
-}
-
-export function getBestValveOption(args: {
-  rooms: Room[];
-  current: string;
-  open: string[];
-}): { key: string; flowRate: number; path: string[] } {
-  const options = getValveOptions(args);
-
-  options.forEach((o) => {
-    console.log(
-      `${args.current} => ${o.key} with ${o.flowRate} via ${o.path.join(',')}`
-    );
-  });
-
-  options.sort((a, b) => {
-    const maxDist = Math.max(a.path.length, b.path.length);
-    const [ad, bd] = [a, b].map(
-      ({ path, flowRate }) => (1 + maxDist - path.length) * flowRate
-    );
-    return bd - ad;
-  });
-  return options[0] || { key: args.current, flowRate: 0 };
-}
-
-function log(s: string) {
-  console.log(s);
-}
-
-const logMinute = (n: number) => log(`== Minute ${n} ==`);
-const logRelease = (rooms: Room[], open: string[]) => {
-  const sorted = [...open].sort((a, b) => a.localeCompare(b));
-  const release = calcRelease(rooms, open);
-  if (sorted.length < 1) {
-    log('No valves are open.');
-  } else if (sorted.length === 1) {
-    log(`Valve ${sorted[0]} is open, releasing ${release}`);
-  } else {
-    log(
-      `Valve ${sorted.slice(0, sorted.length - 1).join(', ')} and ${
-        sorted[sorted.length - 1]
-      } are open, releasing ${release}`
-    );
-  }
-};
-const logMove = (valve: string) => log(`You move to valve ${valve}.`);
-const logOpen = (valve: string) => log(`You open valve ${valve}.`);
-
-const calcRelease = (rooms: Room[], open: string[]) =>
-  sum(open.map((key) => getRoom(rooms, key).flowRate));
-
-export function openValves(args: {
-  rooms: Room[];
-  time: number;
-  start: string;
-}): { open: string[]; released: number } {
-  const { rooms, time, start } = args;
-  console.log(
-    `There are ${
-      rooms.filter((r) => r.flowRate > 0).length
-    } valves with flow rate > 0`
-  );
-  let current = start;
-  let released = 0;
-  let moves: string[] = [];
-  const open: string[] = [];
-  for (let timeLeft = time; timeLeft > 0; timeLeft--) {
-    logMinute(time - timeLeft + 1);
-    released += calcRelease(rooms, open);
-    logRelease(rooms, open);
-    if (!moves.length) {
-      const o = getBestValveOption({ rooms, current, open });
-      if (o?.path != null) {
-        console.log(`new target is ${o.key}`);
-        moves = [...o.path];
-      }
-    }
-    if (moves.length) logMove(moves[0]);
-    if (moves.length < 1 && !open.includes(current)) {
-      logOpen(current);
-      open.push(current);
-    }
-    current = moves.shift() || current;
-  }
-  return { open, released };
+export function buildGraph(rooms: Room[]): Record<string, string[]> {
+  const graph: Record<string, string[]> = {};
+  rooms.forEach((room) => (graph[room.key] = room.tunnelKeys));
+  return graph;
 }
