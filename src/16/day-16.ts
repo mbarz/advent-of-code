@@ -29,8 +29,6 @@ export class ValveSolver {
   graph: Graph;
   flowRates: FlowRates;
 
-  maxOpen = 0;
-
   pathCache: Record<string, string[]> = {};
   solutionCache: Record<string, { released: number; path: string[] }> = {};
 
@@ -41,9 +39,6 @@ export class ValveSolver {
 
     const keys = Object.keys(this.graph);
     keys.sort((a, b) => a.localeCompare(b));
-
-    this.maxOpen = parsed.rooms.filter((r) => r.flowRate > 0).length;
-    console.log({ maxOpen: this.maxOpen });
   }
 
   solve(
@@ -97,8 +92,7 @@ export class ValveSolver {
     return result;
   }
 
-  cache: Map<string, number> = new Map();
-  // cacheWithTime: Map<string, { time: number; value: number }> = new Map();
+  cache: Map<string, { timeLeft: number; value: number }> = new Map();
 
   solveStepByStep(
     current: string,
@@ -112,10 +106,14 @@ export class ValveSolver {
         : 0;
     }
 
-    const key = `${helpers};${current};${timeLeft};${open.join(',')}`;
+    const key = `${helpers};${current};${open.join(',')}`;
 
     if (this.cache.has(key)) {
-      return this.cache.get(key) as number;
+      const cached = this.cache.get(key);
+      if (cached != null) {
+        if (cached.timeLeft === timeLeft) return cached.value;
+        if (cached.timeLeft > timeLeft) return 0;
+      }
     }
 
     const flowRate = this.flowRates[current];
@@ -130,11 +128,13 @@ export class ValveSolver {
       const sub = this.solveStepByStep(next, open, timeLeft - 1, helpers);
       if (sub >= result) result = sub;
     }
-    this.cache.set(key, result);
+
     const cacheSize = this.cache.size;
-    if (cacheSize % 100000 === 0) {
+    if (!this.cache.has(key) && cacheSize % 1000000 === 0 && cacheSize > 0) {
       console.log(`Cached ${cacheSize} states`);
     }
+    this.cache.set(key, { timeLeft, value: result });
+
     return result;
   }
 
