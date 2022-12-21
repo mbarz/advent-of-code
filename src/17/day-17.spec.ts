@@ -1,75 +1,70 @@
-import { nextTick } from 'process';
 import {
-  addShapeToGame,
+  advanceGame,
   Game as TetrisGame,
   moveShapeLeft,
   moveShapeRight,
   TETRIS,
-} from './tetris';
+} from './day-17';
 
 describe('Day 17: Tetris', () => {
   it('should place shape on empty field', () => {
-    const g = new TetrisGame(TETRIS.shapes, '');
-    expect(g.state.field).toEqual('-------');
+    const g = new TetrisGame('>');
+    expect(g.state.field).toEqual([127]);
     g.tick();
-    expect(g.state.field).toEqual(
-      ['..@@@@.', '.......', '.......', '.......', '-------'].join('\n')
-    );
+    expect(g.state.field).toEqual([0, 0, 0, 0b1111111]);
+    expect(g.state.shape).toEqual([0b0001111, 0, 0, 0]);
   });
 
   it('should move shape on field', () => {
-    const g = new TetrisGame(TETRIS.shapes, '><<<');
-    g.tick();
-    g.tick();
-    expect(g.state.field).toEqual(
-      ['...@@@@', '.......', '.......', '-------'].join('\n')
-    );
-    g.tick();
-    expect(g.state.field).toEqual(['..@@@@.', '.......', '-------'].join('\n'));
-    g.tick();
-    expect(g.state.field).toEqual(['.@@@@..', '-------'].join('\n'));
-    g.tick();
-    expect(g.state.field).toEqual(['####...', '-------'].join('\n'));
+    const g = new TetrisGame(TETRIS.examplePattern);
+    expect(g.state.shape).toEqual([0]);
+    g.tick(); // appear and >
+    expect(g.state.shape).toEqual([0b0001111, 0, 0, 0]);
+    g.tick(); // >
+    expect(g.state.shape).toEqual([0b0001111, 0, 0]);
+    g.tick(); // >
+    expect(g.state.shape).toEqual([0b0001111, 0]);
+    g.tick(); // <
+    expect(g.state.field).toEqual([0b0011110, 0b1111111]);
+    expect(g.state.shape).toEqual([0, 0]);
   });
 
   it('should not move when at boundary field', () => {
-    const g = new TetrisGame(TETRIS.shapes, '>><<<<<<');
+    const g = new TetrisGame('>><<<<<<');
     let s = g.state;
-    s = addShapeToGame(s, '@@@@');
+    s = advanceGame(s, 1);
+    expect(s.shape[0]).toEqual(0b0001111);
     s = moveShapeRight(s);
-    expect(s.field.split('\n')[0]).toEqual('...@@@@');
-    s = moveShapeRight(s);
-    expect(s.field.split('\n')[0]).toEqual('...@@@@');
+    expect(s.shape[0]).toEqual(0b0001111);
     s = moveShapeLeft(s);
-    expect(s.field.split('\n')[0]).toEqual('..@@@@.');
+    expect(s.shape[0]).toEqual(0b0011110);
     s = moveShapeLeft(s);
-    expect(s.field.split('\n')[0]).toEqual('.@@@@..');
+    expect(s.shape[0]).toEqual(0b0111100);
     s = moveShapeLeft(s);
-    expect(s.field.split('\n')[0]).toEqual('@@@@...');
+    expect(s.shape[0]).toEqual(0b1111000);
     s = moveShapeLeft(s);
-    expect(s.field.split('\n')[0]).toEqual('@@@@...');
+    expect(s.shape[0]).toEqual(0b1111000);
   });
 
-  it('should play a few rounds', () => {
-    const g = new TetrisGame(TETRIS.shapes, TETRIS.examplePattern);
-    g.tick(5);
-    expect(g.state.field).toEqual(['..####.', '-------'].join('\n'));
+  it('should cut', () => {
+    const g = new TetrisGame(TETRIS.examplePattern);
+    g.tick(164);
+    expect(g.state.ground).toEqual(0);
+    g.tick(1);
+    expect(g.state.ground).toEqual(46);
+  });
+
+  it('should play for a short while', () => {
+    const g = new TetrisGame(TETRIS.examplePattern);
+    while (g.state.placedShapes < 10) g.tick();
     g.tick();
-    expect(g.state.field).toEqual(
-      [
-        '...@...',
-        '..@@@..',
-        '...@...',
-        '.......',
-        '.......',
-        '.......',
-        '..####.',
-        '-------',
-      ].join('\n')
-    );
-    g.tick(4);
-    expect(g.state.field).toEqual(
-      ['...#...', '..###..', '...#...', '..####.', '-------'].join('\n')
-    );
+    expect(g.state.ground).toEqual(0);
+    expect(g.state.field.length).toEqual(21);
+  });
+
+  it('should play for a while', () => {
+    const g = new TetrisGame(TETRIS.examplePattern);
+    g.place(1000000000000);
+    expect(g.getHeight()).toEqual(1514285714288);
   });
 });
