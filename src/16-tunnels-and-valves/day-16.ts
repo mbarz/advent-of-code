@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { shortestPath } from '../12/day12';
+import { shortestPath } from '../12-climbing-graphs/day12';
 import { isDefinded } from '../util/isDefined';
 
 type Room = {
