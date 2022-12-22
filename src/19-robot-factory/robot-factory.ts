@@ -53,18 +53,28 @@ export class RobotFactory {
     return truncated;
   }
 
+  currentMax = 0;
+
   getMaxOutcome(
     blueprintIndex: number,
     robots: number[],
     res: number[],
     timeLeft: number
   ): number {
-    if (timeLeft === 0) return res[3];
-
-    const blueprint = this.blueprints[blueprintIndex];
     if (timeLeft === 24) {
       this.cache.clear();
+      this.currentMax = 0;
     }
+
+    if (timeLeft === 0) return res[3];
+
+    const maxPossible =
+      (timeLeft * (timeLeft + 1)) / 2 + res[3] + timeLeft * robots[3];
+    if (maxPossible < this.currentMax) {
+      return 0;
+    }
+
+    const blueprint = this.blueprints[blueprintIndex];
 
     const key = this.buildKey(
       blueprintIndex,
@@ -106,6 +116,7 @@ export class RobotFactory {
 
     this.cache.set(key, { timeLeft, current: res[3], gain: result - res[3] });
 
+    this.currentMax = Math.max(this.currentMax, result);
     return result;
   }
 }
