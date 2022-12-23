@@ -10,4 +10,8 @@ const puzzleInput = readFileSync(
 const lib = new MonkeyMathLib();
 lib.parse(puzzleInput);
 const root = lib.getValueOf('root');
-console.log(root);
+console.log(`Part 1 Root:        ${root}`);
+
+lib.realizeItsYou();
+const yourNumber = lib.getYourNumber();
+console.log(`Part 2 Your Number: ${yourNumber}`);

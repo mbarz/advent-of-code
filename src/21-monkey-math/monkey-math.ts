@@ -16,8 +16,13 @@ export const mathMonkeyExampleInput = [
   'hmdt: 32',
 ].join('\n');
 
-type NumberMonkey = { name: string; value: number };
-type OperationMonkey = { name: string; a: string; b: string; operator: string };
+export type NumberMonkey = { name: string; value: number };
+export type OperationMonkey = {
+  name: string;
+  a: string;
+  b: string;
+  operator: string;
+};
 
 export type MathMonkey = NumberMonkey | OperationMonkey;
 
@@ -37,24 +42,88 @@ export function parseMathMonkey(input: string): MathMonkey {
 
 export class MonkeyMathLib {
   monkeys: MathMonkey[] = [];
+
+  selfaware = false;
+
   parse(input: string) {
     this.monkeys = parseMathMonkeys(input);
   }
-  getValueOf(name: string): number {
+
+  getMonkey<T extends MathMonkey>(name: string): T {
     const monkey = this.monkeys.find((m) => m.name === name);
     if (monkey == null) throw new Error(`Unknown Monkey "${name}"`);
+    return monkey as T;
+  }
+
+  getValueOf(name: string): number | null {
+    const monkey = this.getMonkey(name);
+
+    if (this.selfaware && itIsYou(monkey)) return null;
+
     if (isNumberMonkey(monkey)) return monkey.value;
     const o = monkey.operator;
     const a = this.getValueOf(monkey.a);
     const b = this.getValueOf(monkey.b);
+    if (a == null || b == null) return null;
     if (o === '+') return a + b;
     if (o === '-') return a - b;
     if (o === '/') return a / b;
     if (o === '*') return a * b;
     throw new Error(`Unknown operator ${o} for monkey ${name}`);
   }
+
+  realizeItsYou() {
+    this.selfaware = true;
+  }
+
+  getYourNumber(): number {
+    const root = this.getMonkey<OperationMonkey>('root');
+    const a = this.getValueOf(root.a);
+    const b = this.getValueOf(root.b);
+
+    if (a == null && b != null) {
+      return this.resolve(root.a, b);
+    }
+    if (a != null && b == null) {
+      return this.resolve(root.b, a);
+    }
+    throw new Error('I think you are not self aware');
+  }
+
+  resolve(name: string, expected: number): number {
+    const monkey = this.getMonkey(name);
+    if (itIsYou(monkey)) return expected;
+    if (isNumberMonkey(monkey)) {
+      throw new Error(`Can not resolve fixed monkey ${monkey.name}`);
+    }
+    const a = this.getValueOf(monkey.a);
+    const b = this.getValueOf(monkey.b);
+
+    const o = monkey.operator;
+    let e = 0;
+    if (o === '+' && a != null) e = expected - a;
+    if (o === '+' && b != null) e = expected - b;
+    if (o === '-' && a != null) e = a - expected;
+    if (o === '-' && b != null) e = b + expected;
+    if (o === '/' && a != null) e = a / expected;
+    if (o === '/' && b != null) e = b * expected;
+    if (o === '*' && a != null) e = expected / a;
+    if (o === '*' && b != null) e = expected / b;
+
+    if (a == null) {
+      return this.resolve(monkey.a, e);
+    }
+    if (b == null) {
+      return this.resolve(monkey.b, e);
+    }
+
+    throw new Error(`${name} does not have a mising value`);
+  }
 }
 
 function isNumberMonkey(m: MathMonkey): m is NumberMonkey {
   return (m as OperationMonkey).operator == null;
+}
+function itIsYou(m: MathMonkey): boolean {
+  return m.name === 'humn';
 }

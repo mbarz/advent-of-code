@@ -1,6 +1,7 @@
 import {
   mathMonkeyExampleInput,
   MonkeyMathLib,
+  OperationMonkey,
   parseMathMonkeys,
 } from './monkey-math';
 
@@ -31,5 +32,12 @@ describe('Day 21: Monkey Math', () => {
     lib.parse(mathMonkeyExampleInput);
     expect(lib.getValueOf('ptdq')).toEqual(2);
     expect(lib.getValueOf('root')).toEqual(152);
+  });
+
+  it('should calc part of tree', () => {
+    const lib = new MonkeyMathLib();
+    lib.parse(mathMonkeyExampleInput);
+    lib.realizeItsYou();
+    expect(lib.getYourNumber()).toEqual(301);
   });
 });
