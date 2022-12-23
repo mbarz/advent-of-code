@@ -1,6 +1,13 @@
-import { mixArray, moveArrayItemRelative } from './day-20-decoder';
+import {
+  mixArray,
+  moveArrayItemRelative,
+  solveDay20Part1,
+  solveDay20Part2,
+} from './day-20-decoder';
 
 describe('Day 20: moving numbers', () => {
+  const exampleArray = [1, 2, -3, 3, -2, 0, 4];
+
   it('should move in circles', () => {
     const given = [0, 1, 2, 3, 4];
 
@@ -44,15 +51,8 @@ describe('Day 20: moving numbers', () => {
 
   it('should mix array', () => {
     const given = [1, 2, -3, 3, -2, 0, 4];
-    expect(mixArray(given, { stopAt: 0 })).toEqual([1, 2, -3, 3, -2, 0, 4]);
-    expect(mixArray(given, { stopAt: 1 })).toEqual([2, 1, -3, 3, -2, 0, 4]);
-    expect(mixArray(given, { stopAt: 2 })).toEqual([1, -3, 2, 3, -2, 0, 4]);
-    expect(mixArray(given, { stopAt: 3 })).toEqual([1, 2, 3, -2, -3, 0, 4]);
-    expect(mixArray(given, { stopAt: 4 })).toEqual([1, 2, -2, -3, 0, 3, 4]);
-    expect(mixArray(given, { stopAt: 5 })).toEqual([1, 2, -3, 0, 3, 4, -2]);
-    expect(mixArray(given, { stopAt: 6 })).toEqual([1, 2, -3, 0, 3, 4, -2]);
-    expect(mixArray(given, { stopAt: 7 })).toEqual([1, 2, -3, 4, 0, 3, -2]);
     expect(mixArray(given)).toEqual([1, 2, -3, 4, 0, 3, -2]);
+    // should not change original
     expect(given).toEqual([1, 2, -3, 3, -2, 0, 4]);
   });
 
@@ -63,13 +63,21 @@ describe('Day 20: moving numbers', () => {
       0, -2434767459, 3246356612, -1623178306, 2434767459, 1623178306,
       811589153,
     ]);
-    expect(mixArray(given, { times: 2 })).toEqual([
+    expect(mixArray(given, 2)).toEqual([
       0, 2434767459, 1623178306, 3246356612, -2434767459, -1623178306,
       811589153,
     ]);
-    expect(mixArray(given, { times: 6 })).toEqual([
+    expect(mixArray(given, 6)).toEqual([
       0, 811589153, -1623178306, 3246356612, -2434767459, 1623178306,
       2434767459,
     ]);
+  });
+
+  it('should solve part 1', () => {
+    expect(solveDay20Part1(exampleArray)).toEqual(3);
+  });
+
+  it('should solve part 2', () => {
+    expect(solveDay20Part2(exampleArray)).toEqual(1623178306);
   });
 });

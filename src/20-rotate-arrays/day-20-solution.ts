@@ -35,21 +35,16 @@ if (solvePart1) {
 if (solvePart2) {
   console.time('Part2');
 
-  const parts = solveDay20Part2(numbers);
+  const solution = solveDay20Part2(numbers);
   console.timeEnd('Part2');
-  const solution = sum(parts);
   console.log(solution);
 
   if (example) {
     const givenParts = [811589153, 2434767459, -1623178306];
-    const correct = givenParts.find((p, i) => p !== parts[i]) == null;
-
+    const correct = solution === sum(givenParts);
     console.log(correct ? 'SUCCESS' : 'FAILURE');
-    console.log(`${parts[0]} VS 811589153`);
-    console.log(`${parts[1]} VS 2434767459`);
-    console.log(`${parts[2]} VS -1623178306`);
+  } else {
+    const correct = solution === 12374299815791;
+    console.log(correct ? 'SUCCESS' : 'FAILURE');
   }
-
-  // seems not to be 4761593560651
-  // not -952805665622
 }
