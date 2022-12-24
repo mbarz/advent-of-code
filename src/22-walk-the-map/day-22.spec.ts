@@ -1,4 +1,6 @@
-import { exampleMapInput, MonkeyBoard } from './monkey-map';
+import { isGeneratorFunction } from 'util/types';
+import { calcEdgeCoordinates, MonkeyCube } from './monkey-cube';
+import { exampleEdges, exampleMapInput, MonkeyBoard } from './monkey-map';
 
 function init() {
   const b = new MonkeyBoard();
@@ -117,5 +119,95 @@ describe('Day 22: Monkey Map', () => {
   it('should walk all the way', () => {
     const b = init();
     expect(b.getPassword()).toEqual(6032);
+  });
+
+  it('should parse cube', () => {
+    const c = new MonkeyCube();
+    c.parse(exampleMapInput, exampleEdges);
+    expect(c.squareSize).toEqual(4);
+    expect(c.squares).toEqual([
+      [8, 0],
+      [0, 4],
+      [4, 4],
+      [8, 4],
+      [8, 8],
+      [12, 8],
+    ]);
+
+    const teleports = Array.from(c.teleports.entries())
+      .map(([key, value]) => {
+        return `${key}=>${value.join(',')}`;
+      })
+      .sort((a, b) => a[0].localeCompare(b[0]));
+
+    c.drawTeleporterMap('R');
+
+    expect(teleports.filter((t) => t.startsWith('L'))).toEqual([
+      'L,7,0=>D,4,4',
+      'L,7,1=>D,5,4',
+      'L,7,2=>D,6,4',
+      'L,7,3=>D,7,4',
+      'L,7,8=>U,7,7',
+      'L,7,9=>U,6,7',
+      'L,7,10=>U,5,7',
+      'L,7,11=>U,4,7',
+      'L,-1,4=>U,15,11',
+      'L,-1,5=>U,14,11',
+      'L,-1,6=>U,13,11',
+      'L,-1,7=>U,12,11',
+    ]);
+
+    expect(teleports.filter((t) => t.startsWith('R'))).toEqual([
+      'R,12,3=>L,15,8',
+      'R,12,2=>L,15,9',
+      'R,12,1=>L,15,10',
+      'R,12,0=>L,15,11',
+      'R,16,8=>L,11,3',
+      'R,16,9=>L,11,2',
+      'R,16,10=>L,11,1',
+      'R,16,11=>L,11,0',
+      'R,12,7=>D,12,8',
+      'R,12,6=>D,13,8',
+      'R,12,5=>D,14,8',
+      'R,12,4=>D,15,8',
+    ]);
+  });
+
+  it('should walk all the way on cube', () => {
+    const c = new MonkeyCube();
+    c.parse(exampleMapInput, exampleEdges);
+    c.drawTeleporterMap('L');
+    c.drawTeleporterMap('R');
+    expect(c.getPassword()).toEqual(5031);
+  });
+
+  it('should build edges', () => {
+    expect(JSON.stringify(calcEdgeCoordinates('U', 3))).toEqual(
+      '[[0,0],[1,0],[2,0]]'
+    );
+    expect(JSON.stringify(calcEdgeCoordinates('D', 3))).toEqual(
+      '[[2,2],[1,2],[0,2]]'
+    );
+    expect(JSON.stringify(calcEdgeCoordinates('L', 3))).toEqual(
+      '[[0,2],[0,1],[0,0]]'
+    );
+    expect(JSON.stringify(calcEdgeCoordinates('R', 3))).toEqual(
+      '[[2,0],[2,1],[2,2]]'
+    );
+
+    const c = new MonkeyCube();
+    c.parse(exampleMapInput, exampleEdges);
+    expect(JSON.stringify(c.calcEdgeCoordinates(c.squares[3], 'U'))).toEqual(
+      '[[8,4],[9,4],[10,4],[11,4]]'
+    );
+    expect(JSON.stringify(c.calcEdgeCoordinates(c.squares[3], 'L'))).toEqual(
+      '[[8,7],[8,6],[8,5],[8,4]]'
+    );
+    expect(JSON.stringify(c.calcEdgeCoordinates(c.squares[3], 'R'))).toEqual(
+      '[[11,4],[11,5],[11,6],[11,7]]'
+    );
+    expect(JSON.stringify(c.calcEdgeCoordinates(c.squares[3], 'D'))).toEqual(
+      '[[11,7],[10,7],[9,7],[8,7]]'
+    );
   });
 });
