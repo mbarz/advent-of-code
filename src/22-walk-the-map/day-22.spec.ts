@@ -29,8 +29,6 @@ describe('Day 22: Monkey Map', () => {
     expect(b.position).toEqual([8, 0]);
     expect(b.board).toHaveLength(12);
 
-    b.drawMap();
-
     const teleports = Array.from(b.teleports.entries()).map(
       ([key, value]) => `${key}=>${value.join(',')}`
     );
@@ -140,44 +138,12 @@ describe('Day 22: Monkey Map', () => {
       })
       .sort((a, b) => a[0].localeCompare(b[0]));
 
-    c.drawTeleporterMap('R');
-
-    expect(teleports.filter((t) => t.startsWith('L'))).toEqual([
-      'L,7,0=>D,4,4',
-      'L,7,1=>D,5,4',
-      'L,7,2=>D,6,4',
-      'L,7,3=>D,7,4',
-      'L,7,8=>U,7,7',
-      'L,7,9=>U,6,7',
-      'L,7,10=>U,5,7',
-      'L,7,11=>U,4,7',
-      'L,-1,4=>U,15,11',
-      'L,-1,5=>U,14,11',
-      'L,-1,6=>U,13,11',
-      'L,-1,7=>U,12,11',
-    ]);
-
-    expect(teleports.filter((t) => t.startsWith('R'))).toEqual([
-      'R,12,3=>L,15,8',
-      'R,12,2=>L,15,9',
-      'R,12,1=>L,15,10',
-      'R,12,0=>L,15,11',
-      'R,16,8=>L,11,3',
-      'R,16,9=>L,11,2',
-      'R,16,10=>L,11,1',
-      'R,16,11=>L,11,0',
-      'R,12,7=>D,12,8',
-      'R,12,6=>D,13,8',
-      'R,12,5=>D,14,8',
-      'R,12,4=>D,15,8',
-    ]);
+    expect(Array.from(teleports.keys())).toHaveLength(56);
   });
 
   it('should walk all the way on cube', () => {
     const c = new MonkeyCube();
     c.parse(exampleMapInput, exampleEdges);
-    c.drawTeleporterMap('L');
-    c.drawTeleporterMap('R');
     expect(c.getPassword()).toEqual(5031);
   });
 

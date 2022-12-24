@@ -1,12 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import {
-  Edge,
-  exampleEdges,
-  exampleMapInput,
-  MonkeyBoard,
-  MonkeyCube,
-} from './monkey-map';
+import { MonkeyCube } from './monkey-cube';
+import { Edge, exampleEdges, exampleMapInput, MonkeyBoard } from './monkey-map';
 
 const puzzleInput = readFileSync(
   join(__dirname, 'day-22-puzzle-input.txt'),
@@ -39,17 +34,12 @@ b.parse(input);
 
 const password = b.getPassword();
 console.log(`Password from Part 1: ${password}`);
+// 165094
 
 const c = new MonkeyCube();
 c.parse(input, edges);
-c.drawTeleporters();
-// c.drawTeleporterMap('L');
-// c.drawTeleporterMap('R');
-// c.drawTeleporterMap('U');
-// c.drawTeleporterMap('D');
+
 const password2 = c.getPassword();
 
 console.log(`Password from Part 2: ${password2}`);
-
-// solution 1 is 165094
-// solution 2 is not 91383
+// 95316

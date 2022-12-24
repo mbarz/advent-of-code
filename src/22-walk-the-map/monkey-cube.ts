@@ -44,67 +44,58 @@ export class MonkeyCube {
   }
 
   buildTeleports(edge: Edge) {
-    function buildEdge(
-      offset: [number, number],
-      side: string,
-      size: number
-    ): [number, number][] {
-      const res: [number, number][] = [];
-      for (let i = 0; i < size; i++) {
-        let [x, y] = offset;
-        if (side === 'D') y += size - 1;
-        if (side === 'R') x += size - 1;
-        if (side === 'L' || side === 'R') y += i;
-        if (side === 'U' || side === 'D') x += i;
-        res.push([x, y]);
-      }
-      if (side === 'R' || side === 'D') res.reverse();
-      return res;
-    }
-
     const [a, b] = edge
       .sort((a, b) => a.localeCompare(b))
       .map((s) => s.split(''));
-    const square1 = this.squares[Number(a[0]) - 1];
-    const square2 = this.squares[Number(b[0]) - 1];
+    const i1 = Number(a[0]) - 1;
+    const i2 = Number(b[0]) - 1;
     const side1 = a[1];
     const side2 = b[1];
 
-    if (side1 === opp(side2) && Math.abs(Number(a[0]) - Number(b[0])) <= 3) {
+    if (side1 === opp(side2) && Math.abs(i1 - i2) <= 3) {
       return;
     }
 
-    const edge1 = buildEdge(square1, side1, this.squareSize);
-    const edge2 = buildEdge(square2, side2, this.squareSize);
+    this.buildTeleportsFromEdge(
+      { square: i1, edge: side1 },
+      { square: i2, edge: side2 }
+    );
+    this.buildTeleportsFromEdge(
+      { square: i2, edge: side2 },
+      { square: i1, edge: side1 }
+    );
+  }
 
-    if (side1 === side2) edge2.reverse();
+  buildTeleportsFromEdge(
+    from: { square: number; edge: string },
+    to: { square: number; edge: string }
+  ) {
+    const coords1 = shiftCoords(
+      this.calcEdgeCoordinates(this.squares[from.square], from.edge),
+      from.edge
+    );
+    const coords2 = this.calcEdgeCoordinates(
+      this.squares[to.square],
+      to.edge
+    ).reverse();
+    this.buildTeleportsFromTo(coords1, from.edge, coords2, opp(to.edge));
+  }
 
-    edge1.forEach((p, i) => {
-      let [x, y] = p;
-      if (side1 === 'L') x--;
-      if (side1 === 'R') x++;
-      if (side1 === 'U') y--;
-      if (side1 === 'D') y++;
-
-      const key = [side1, x, y].join(',');
-      this.teleports.set(key, [opp(side2), edge2[i][0], edge2[i][1]]);
-    });
-
-    edge2.forEach((p, i) => {
-      let [x, y] = p;
-      if (side2 === 'L') x--;
-      if (side2 === 'R') x++;
-      if (side2 === 'U') y--;
-      if (side2 === 'D') y++;
-
-      const key = [side2, x, y].join(',');
-      this.teleports.set(key, [opp(side1), edge1[i][0], edge1[i][1]]);
+  buildTeleportsFromTo(
+    from: [number, number][],
+    d1: string,
+    to: [number, number][],
+    d2: string
+  ) {
+    from.forEach((p1, i) => {
+      const p2 = to[i];
+      const key = [d1, p1[0], p1[1]].join(',');
+      this.teleports.set(key, [d2, p2[0], p2[1]]);
     });
   }
 
   executeNextInstruction() {
     const instruction = this.instructions.shift();
-    console.log(instruction);
     if (instruction == null) return;
     if (typeof instruction === 'number') {
       for (let i = 0; i < instruction; ++i) {
@@ -122,15 +113,11 @@ export class MonkeyCube {
             if (this.board[y][x] === '.') {
               this.position = [x, y];
               this.direction = teleport[0];
-              console.log(
-                `teleport to ${x},${y} and rotate to ${this.direction}`
-              );
             }
           }
         } else {
           if (this.board[y][x] === '.') {
             this.position = [x, y];
-            console.log(`go to ${x},${y}`);
           }
         }
       }
@@ -140,7 +127,6 @@ export class MonkeyCube {
         L: { R: 'U', U: 'L', L: 'D', D: 'R' },
       };
       this.direction = moves[instruction][this.direction];
-      console.log(`rotate to ${this.direction}`);
     }
   }
 
@@ -149,82 +135,15 @@ export class MonkeyCube {
       this.executeNextInstruction();
     }
     const [x, y] = this.position;
-    console.log(x, y, this.direction);
     const facing = ['R', 'D', 'L', 'U'].indexOf(this.direction);
     const password = 1000 * (y + 1) + 4 * (x + 1) + facing;
-    console.log(`1000 * ${y + 1} + 4 * ${x + 1} + ${facing} = ${password}`);
     return password;
   }
 
-  drawTeleporterMap(direction: string) {
-    let lines = [...this.board];
-
-    this.squares.forEach((sq, si) => {
-      for (let y = sq[1]; y < sq[1] + this.squareSize; ++y) {
-        for (let x = sq[0]; x < sq[0] + this.squareSize; ++x) {
-          const line = lines[y].split('');
-          line[x] = String(si + 1);
-          lines[y] = line.join('');
-        }
-      }
-    });
-
-    const emptyLine = Array(lines[0].length).fill(' ').join('');
-    lines.push(emptyLine);
-    lines.unshift(emptyLine);
-    lines = lines.map((l) => ` ${l} `);
-
-    const map = lines.map((line) => line.split(''));
-
-    Array.from(this.teleports.keys())
-      .filter((key) => key.charAt(0) === direction)
-      .forEach((key, i) => {
-        const [x, y] = key
-          .split(',')
-          .slice(1)
-          .map((n) => Number(n));
-        const [, x2, y2] = this.teleports.get(key) as any;
-
-        map[y + 1][x + 1] = String.fromCharCode(65 + i);
-        map[y2 + 1][x2 + 1] = String.fromCharCode(65 + i);
-      });
-    console.log(map.map((line) => line.join('')).join('\n'));
-  }
-
-  drawTeleporters() {
-    let lines = [...this.board];
-
-    this.squares.forEach((sq, si) => {
-      for (let y = sq[1]; y < sq[1] + this.squareSize; ++y) {
-        for (let x = sq[0]; x < sq[0] + this.squareSize; ++x) {
-          const line = lines[y].split('');
-          line[x] = String(si + 1);
-          lines[y] = line.join('');
-        }
-      }
-    });
-
-    const emptyLine = Array(lines[0].length).fill(' ').join('');
-    lines.push(emptyLine);
-    lines.unshift(emptyLine);
-    lines = lines.map((l) => ` ${l} `);
-
-    const map = lines.map((line) => line.split(''));
-
-    Array.from(this.teleports.keys()).forEach((key, i) => {
-      const [x, y] = key
-        .split(',')
-        .slice(1)
-        .map((n) => Number(n));
-      const [, x2, y2] = this.teleports.get(key) as any;
-
-      map[y + 1][x + 1] = 'o';
-      map[y2 + 1][x2 + 1] = 'x';
-    });
-    console.log(map.map((line) => line.join('')).join('\n'));
-  }
-
-  calcEdgeCoordinates(square: [number, number], direction: string) {
+  calcEdgeCoordinates(
+    square: [number, number],
+    direction: string
+  ): [number, number][] {
     const coords = calcEdgeCoordinates(direction, this.squareSize);
     return coords.map(([x, y]) => [square[0] + x, square[1] + y]);
   }
@@ -248,8 +167,20 @@ export function calcEdgeCoordinates(
   if (direction === 'R') {
     return zero.map((_n, i) => [n - 1, i]);
   }
+  throw new Error('invalid direction');
+}
 
-  return [];
+function shiftCoords(
+  coords: [number, number][],
+  d: string
+): [number, number][] {
+  return coords.map(([x, y]) => {
+    if (d === 'L') return [x - 1, y];
+    if (d === 'R') return [x + 1, y];
+    if (d === 'U') return [x, y - 1];
+    if (d === 'D') return [x, y + 1];
+    throw new Error('invalid direction');
+  });
 }
 
 function opp(s: string) {
@@ -257,5 +188,5 @@ function opp(s: string) {
   if (s === 'R') return 'L';
   if (s === 'U') return 'D';
   if (s === 'D') return 'U';
-  return s;
+  throw new Error('invalid direction');
 }
