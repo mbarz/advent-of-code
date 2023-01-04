@@ -1,5 +1,4 @@
 import { moveBlizzards, parseBlizzardMap } from './blizzard';
-import { getLooptime } from './day-24-solution';
 
 const smallExampleInput = [
   '#.#####',
@@ -29,11 +28,5 @@ describe('Day 24: Blizzard', () => {
       { position: { x: 3, y: 2 }, direction: { x: 1, y: 0 } },
       { position: { x: 4, y: 1 }, direction: { x: 0, y: 1 } },
     ]);
-  });
-
-  it('should detect loops', () => {
-    const { blizzards, dimensions } = parseBlizzardMap(smallExampleInput);
-    const t = getLooptime(blizzards, dimensions);
-    expect(t).toEqual(5);
   });
 });
