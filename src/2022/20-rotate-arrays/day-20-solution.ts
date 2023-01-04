@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 import { solveDay20Part1, solveDay20Part2 } from './day-20-decoder';
 
 const puzzleInput = readFileSync(

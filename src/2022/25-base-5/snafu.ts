@@ -1,4 +1,4 @@
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 
 export function fromSnafu(snafu: string) {
   const digits = snafu.split('');

@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { isDefinded } from '../../util/isDefined';
 import { shortestPath } from '../12-climbing-graphs/day12';
-import { isDefinded } from '../util/isDefined';
 
 type Room = {
   key: string;

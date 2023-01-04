@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 import { fromSnafu, toSnafu } from './snafu';
 
 const exampleInput = [

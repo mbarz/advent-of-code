@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 import { RobotFactory } from './robot-factory';
 
 const exampleInput = [

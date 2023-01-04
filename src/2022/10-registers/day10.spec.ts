@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
-import { sum } from '../util/sum';
-import { CPU, collectSignalStrengthAt, interestingCycles } from './cpu';
+import { sum } from '../../util/sum';
+import { collectSignalStrengthAt, CPU, interestingCycles } from './cpu';
 import { CRT } from './crt';
 
 describe('Day 10', () => {

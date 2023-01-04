@@ -1,11 +1,11 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 import {
+  buildPairs,
   getDecoderKey,
   indicesOfCorrectPairs,
   parsePackets,
-  buildPairs,
 } from './day13';
 
 const filePath = join(__dirname, '/day-13-puzzle-input.txt');

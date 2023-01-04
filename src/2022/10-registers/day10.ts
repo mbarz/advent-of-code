@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 import { collectSignalStrengthAt, CPU, interestingCycles } from './cpu';
 import { CRT } from './crt';
 

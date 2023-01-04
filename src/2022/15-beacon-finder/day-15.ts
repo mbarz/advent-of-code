@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 
 export function parseFile(s: string) {
   const input = readFileSync(join(__dirname, `day-15-${s}-input.txt`), 'utf-8');
