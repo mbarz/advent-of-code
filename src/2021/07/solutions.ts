@@ -68,8 +68,6 @@ const puzzle = [
   350, 108, 379, 14, 53, 349, 43, 435, 195, 102, 168, 338,
 ];
 
-console.log(sum(example) / example.length);
-
 function solve(name: string, given: number[], variant: 'a' | 'b') {
   const min = Math.min(...given);
   const max = Math.max(...given);
