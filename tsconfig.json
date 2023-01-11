@@ -10,6 +10,7 @@
     "sourceMap": true,
     "outDir": "dist",
     "rootDir": "src",
+    "sourceRoot": "src",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -20,5 +21,5 @@
     "typeRoots": ["node_modules/@types", "types"],
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", "test", "types"]
+  "exclude": ["node_modules", "test", "types", "dist"]
 }
