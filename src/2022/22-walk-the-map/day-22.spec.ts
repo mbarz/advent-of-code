@@ -1,4 +1,3 @@
-import { isGeneratorFunction } from 'util/types';
 import { calcEdgeCoordinates, MonkeyCube } from './monkey-cube';
 import { exampleEdges, exampleMapInput, MonkeyBoard } from './monkey-map';
 

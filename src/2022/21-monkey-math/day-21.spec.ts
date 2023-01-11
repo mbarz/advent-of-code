@@ -1,7 +1,6 @@
 import {
   mathMonkeyExampleInput,
   MonkeyMathLib,
-  OperationMonkey,
   parseMathMonkeys,
 } from './monkey-math';
 
