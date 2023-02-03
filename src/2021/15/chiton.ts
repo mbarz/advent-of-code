@@ -71,6 +71,33 @@ function getOptions(
     .filter((p) => history.find((visited) => isSamePoint(visited, p)) == null);
 }
 
+export function buildBigChitonCave(map: number[][]): number[][] {
+  const copy = [...map.map((row) => [...row])];
+
+  for (let t = 0; t < 4; ++t) {
+    for (let y = 0; y < map.length; y++) {
+      copy.push(
+        map[y].map((cell) => {
+          const n = cell + t + 1;
+          return n < 10 ? n : n - 9;
+        })
+      );
+    }
+  }
+
+  map = [...copy.map((row) => [...row])];
+
+  for (let t = 0; t < 4; ++t) {
+    for (let y = 0; y < map.length; y++) {
+      for (let x = 0; x < map[0].length; x++) {
+        const n = map[y][x] + t + 1;
+        copy[y].push(n > 9 ? n - 9 : n);
+      }
+    }
+  }
+  return copy;
+}
+
 export function print(map: number[][], path: Point2D[]) {
   const hist = path.map((p) => [p.x, p.y].join(','));
   console.log(

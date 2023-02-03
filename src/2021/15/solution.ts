@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import {
+  buildBigChitonCave,
   findShortestWayThroughChitonCave,
   parseChitonCave,
   print,
@@ -14,3 +15,10 @@ console.timeEnd('Part1');
 
 console.log(shortest.risk);
 print(cave, shortest.path);
+
+const bigCave = buildBigChitonCave(cave);
+
+console.time('Part2');
+const shortest2 = findShortestWayThroughChitonCave(bigCave);
+console.timeEnd('Part2');
+console.log(shortest2.risk);
