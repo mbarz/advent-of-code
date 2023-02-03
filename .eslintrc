@@ -8,6 +8,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
-    "quotes": ["error", "single"]
+    "quotes": ["error", "single"],
+    "@typescript-eslint/no-non-null-assertion": "off"
   }
 }
