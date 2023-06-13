@@ -39,6 +39,7 @@ export class Image {
 
 export class ImageEnhancer {
   static addImageBorder(input: Image, width = 1): Image {
+    if (width < 1) return input;
     const lines = input.lines;
     const w = lines[0].length + 2;
     const f = input.fill;
@@ -55,16 +56,33 @@ export class ImageEnhancer {
 
   static trim(image: Image): Image {
     const lines = image.lines;
-    let emptyLines = 0;
+
     const emptyLine = Array(image.width).fill(image.fill).join('');
+
+    let top = 0;
     for (let i = 0; i < lines.length; ++i) {
-      if (lines[i] === emptyLine) emptyLines++;
+      if (lines[i] === emptyLine) top++;
       else break;
     }
+
+    let bottom = lines.length;
+    for (let i = lines.length - 1; i > 0; --i) {
+      if (lines[i] === emptyLine) bottom--;
+      else break;
+    }
+
+    const left = Math.min(
+      ...lines.map((line) => line.indexOf('#')).filter((i) => i >= 0)
+    );
+    const right =
+      Math.max(
+        ...lines.map((line) => line.lastIndexOf('#')).filter((i) => i >= 0)
+      ) + 1;
+
     return new Image(
       lines
-        .slice(emptyLines, lines.length - emptyLines)
-        .map((line) => line.substring(emptyLines, line.length - emptyLines))
+        .slice(top, bottom)
+        .map((line) => line.substring(left, right))
         .join('\n'),
       image.fill
     );
@@ -73,7 +91,7 @@ export class ImageEnhancer {
   constructor(public algorithm: string) {}
 
   enhance(input: Image): Image {
-    const image = ImageEnhancer.addImageBorder(input, 5);
+    const image = ImageEnhancer.addImageBorder(input, 2);
     const lines = [];
     for (let y = 0; y < image.height; ++y) {
       let line = '';
