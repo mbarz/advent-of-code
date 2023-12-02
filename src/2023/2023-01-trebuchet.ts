@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { calcSum, readTextFileLines } from './util';
 
 type SearchTerm = {
   s: string;
@@ -15,30 +15,26 @@ export class AdventOfCode2023Day01 {
 
   solvePart2() {
     console.log('Solving part 2...');
-    const lines = this.readTextFileLines(1);
+    const lines = readTextFileLines(1);
     const calibrationValues = lines.map((line) =>
       this.getPart2CalibrationValueForLine(line)
     );
     this.logValues(calibrationValues);
-    const sum = this.calcSum(calibrationValues);
+    const sum = calcSum(calibrationValues);
     // 54094 is the correct value
     console.log(`The sum of all calibration values is ${sum}\n`);
   }
 
   solvePart1() {
     console.log('Solving part 1...');
-    const lines = this.readTextFileLines(1);
+    const lines = readTextFileLines(1);
     const calibrationValues = lines.map((line) =>
       this.getPart1CalibrationValueForLine(line)
     );
     this.logValues(calibrationValues);
-    const sum = this.calcSum(calibrationValues);
+    const sum = calcSum(calibrationValues);
     // Correct solution is 54968
     console.log(`The sum of all calibration values is ${sum}\n`);
-  }
-
-  calcSum(calibrationValues: number[]) {
-    return calibrationValues.reduce((p, c) => p + c, 0);
   }
 
   logValues(calibrationValues: number[]) {
@@ -102,12 +98,5 @@ export class AdventOfCode2023Day01 {
     const first = this.findFirst(line)?.n;
     const last = this.findLast(line)?.n;
     return Number([first, last].join(''));
-  }
-
-  readTextFileLines(day: number, sub?: string): string[] {
-    const name = `input-${String(day).padStart(2, '0')}`;
-    const ext = 'txt';
-    const fileName = [name, sub, ext].filter((n) => !!n).join('.');
-    return fs.readFileSync(`${__dirname}/${fileName}`, 'utf-8').split('\n');
   }
 }
