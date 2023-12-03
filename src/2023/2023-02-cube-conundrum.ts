@@ -81,5 +81,3 @@ export class AdventOfCode2023Day02 {
     });
   }
 }
-
-new AdventOfCode2023Day02().run();
