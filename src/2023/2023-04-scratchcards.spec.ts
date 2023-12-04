@@ -28,12 +28,13 @@ describe('2023 Day 04', () => {
   });
 
   it('should get points for each card', () => {
-    expect(solver.originalCards.map((card) => solver.getPoints(card))).toEqual([
+    expect(solver.cards.map((card) => solver.getPoints(card))).toEqual([
       8, 2, 2, 1, 0, 0,
     ]);
   });
 
   it('should solve part 2 for test data', () => {
     expect(solver.solvePart2()).toEqual(30);
+    expect(solver.solvePart2Linear()).toEqual(30);
   });
 });
