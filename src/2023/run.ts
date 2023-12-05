@@ -1,4 +1,3 @@
-import { AdventOfCode2023Day04 } from './2023-04-scratchcards';
-import { readTextFileLines } from './util';
+import { AdventOfCode2023Day05 } from './2023-05-fertilizer';
 
-new AdventOfCode2023Day04(readTextFileLines(4)).run();
+new AdventOfCode2023Day05().run();
