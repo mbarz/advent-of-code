@@ -10,3 +10,10 @@ export function readTextFileLines(day: number, sub?: string): string[] {
 export function calcSum(values: number[]) {
   return values.reduce((p, c) => p + c, 0);
 }
+
+export function parseNumbers(
+  given: string,
+  seperator: string | RegExp = /\s+/
+) {
+  return given.split(seperator).map((s) => +s);
+}

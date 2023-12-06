@@ -4,7 +4,7 @@ export abstract class Solver {
   protected lines: string[];
 
   constructor(private day: number, sub?: string) {
-    this.lines = readTextFileLines(5, sub);
+    this.lines = readTextFileLines(day, sub);
   }
 
   run() {
