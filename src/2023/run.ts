@@ -1,3 +1,3 @@
-import { AdventOfCode2023Day07 } from './2023-07-camel-cards';
+import { AdventOfCode2023Day08 } from './2023-08-haunted-wasteland';
 
-new AdventOfCode2023Day07().run();
+new AdventOfCode2023Day08().run();
