@@ -6,7 +6,7 @@ describe('2023 - Day 9 - Mirage Maintenance', () => {
   });
 
   it('should solve part 2', () => {
-    expect(createSolver('test').solvePart2()).toEqual(0);
+    expect(createSolver('test').solvePart2()).toEqual(2);
   });
 
   it('should get next z for position', () => {});

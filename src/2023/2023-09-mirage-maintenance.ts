@@ -23,6 +23,18 @@ export class AdventOfCode2023Day09 extends Solver {
   }
 
   solvePart2(): number {
-    return 0;
+    const given = this.lines.map((line) => parseNumbers(line));
+    const prev = given.map((seq) => this.findPrevForSeq(seq));
+    return sum(prev);
+  }
+
+  findPrevForSeq(seq: number[]): number {
+    const diffs = seq.slice(0, -1).map((n, i) => {
+      return seq[i + 1] - n;
+    });
+    const first = seq[0];
+    const firstDiff = diffs[0];
+    if (new Set(diffs).size === 1) return first - firstDiff;
+    return first - this.findPrevForSeq(diffs);
   }
 }
