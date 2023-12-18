@@ -7,6 +7,21 @@ export function readTextFileLines(day: number, sub?: string): string[] {
   return fs.readFileSync(`${__dirname}/${fileName}`, 'utf-8').split('\n');
 }
 
+export function writeTextFileLines(
+  day: number,
+  sub: string | undefined,
+  lines: string[]
+) {
+  const name = `input-${String(day).padStart(2, '0')}`;
+  const ext = 'txt';
+  const fileName = [name, sub, ext].filter((n) => !!n).join('.');
+  return fs.writeFileSync(
+    `${__dirname}/${fileName}`,
+    lines.join('\n'),
+    'utf-8'
+  );
+}
+
 export function calcSum(values: number[]) {
   return values.reduce((p, c) => p + c, 0);
 }

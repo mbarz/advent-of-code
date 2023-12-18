@@ -1,3 +1,3 @@
-import { AdventOfCode2023Day09 } from './2023-09-mirage-maintenance';
+import { AdventOfCode2023Day10 } from './2023-10-pipe-maze';
 
-new AdventOfCode2023Day09().run();
+new AdventOfCode2023Day10().run();
