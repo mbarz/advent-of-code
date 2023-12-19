@@ -7,7 +7,7 @@ export function readTextFile(filePath: string): string[] {
 export function writeTextFileLines(
   day: number,
   sub: string | undefined,
-  lines: string[]
+  lines: string[],
 ) {
   const name = `input-${String(day).padStart(2, '0')}`;
   const ext = 'txt';
@@ -15,7 +15,7 @@ export function writeTextFileLines(
   return fs.writeFileSync(
     `${__dirname}/${fileName}`,
     lines.join('\n'),
-    'utf-8'
+    'utf-8',
   );
 }
 
@@ -25,7 +25,7 @@ export function calcSum(values: number[]) {
 
 export function parseNumbers(
   given: string,
-  seperator: string | RegExp = /\s+/
+  seperator: string | RegExp = /\s+/,
 ) {
   return given.split(seperator).map((s) => +s);
 }

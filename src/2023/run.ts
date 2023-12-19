@@ -10,6 +10,7 @@ import { AdventOfCode2023Day08 } from './08-haunted-wastelands/2023-08-haunted-w
 import { AdventOfCode2023Day09 } from './09-mirage-maintenance/2023-09-mirage-maintenance';
 import { AdventOfCode2023Day10 } from './10-pipe-maze/2023-10-pipe-maze';
 import { AdventOfCode2023Day11 } from './11-cosmic-expansion/2023-11-cosmic-expansion';
+import { AdventOfCode2023Day12 } from './12-hot-springs/2023-12-hot-springs';
 import { getArg } from './util/solver';
 
 const file = (n: number) => {
@@ -41,6 +42,7 @@ const solvers = [
   () => new AdventOfCode2023Day09(file(9)),
   () => new AdventOfCode2023Day10(file(10)),
   () => new AdventOfCode2023Day11(file(11)),
+  () => new AdventOfCode2023Day12(file(12)),
 ];
 
 run(getArg('-d') ?? 10);
@@ -50,8 +52,8 @@ export function run(day: number) {
   const HR = Array(40).fill('-').join('');
   console.log(
     `${HR}\nWelcome to Advent of Code 2023\nDay ${day} - ${summary(
-      day
-    )}\n${HR}\n`
+      day,
+    )}\n${HR}\n`,
   );
   console.log('Solving part 1...');
   console.time('Part1');
