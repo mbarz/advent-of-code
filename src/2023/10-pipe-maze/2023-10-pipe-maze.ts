@@ -1,4 +1,4 @@
-import { Solver } from './solver';
+import { Solver } from '../util/solver';
 
 const DIRECTIONS = ['L', 'R', 'T', 'B'] as const;
 type Side = (typeof DIRECTIONS)[number];
@@ -12,16 +12,18 @@ const pipes: Record<string, Side[]> = {
   '┛': ['L', 'T'],
 };
 
-export class AdventOfCode2023Day10 extends Solver {
-  constructor(suffix?: string) {
-    super(10, suffix);
-    this.lines = this.lines.map((l) =>
-      l
-        .replace(/J/g, '┛')
-        .replace(/L/g, '┗')
-        .replace(/F/g, '┏')
-        .replace(/7/g, '┓')
-    );
+export class AdventOfCode2023Day10 implements Solver {
+  lines: string[];
+  constructor(input: string) {
+    this.lines = input
+      .split('\n')
+      .map((l) =>
+        l
+          .replace(/J/g, '┛')
+          .replace(/L/g, '┗')
+          .replace(/F/g, '┏')
+          .replace(/7/g, '┓')
+      );
   }
 
   solvePart1(): number {

@@ -1,37 +1,32 @@
-import { calcSum, readTextFileLines } from './util';
+import { Solver } from '../util/solver';
+import { calcSum } from '../util/util';
 
 type Color = 'red' | 'blue' | 'green';
 
-export class AdventOfCode2023Day02 {
-  run() {
-    console.log('Welcome to Advent of Code 2023 - Day 2\n');
+export class AdventOfCode2023Day02 implements Solver {
+  private lines: string[];
 
-    this.solvePart1();
-    this.solvePart2();
+  constructor(input: string) {
+    this.lines = input.split('\n');
   }
 
   solvePart1() {
-    console.log('Solving part 1...');
-    const lines = readTextFileLines(2);
-    const games = this.parseGames(lines);
+    const games = this.parseGames(this.lines);
     const gamesWithMaxCounts = this.getMaxCounts(games);
     const load = { red: 12, green: 13, blue: 14 };
     const invalidGames = gamesWithMaxCounts.filter((g) =>
       this.isGameValidWithLoad(g, load)
     );
-    const solution = calcSum(invalidGames.map((g) => g.index));
-    console.log(`Solution: ${solution}`);
+    return calcSum(invalidGames.map((g) => g.index));
   }
 
   solvePart2() {
-    console.log('Solving part 2...');
-    const lines = readTextFileLines(2);
-    const games = this.parseGames(lines);
+    const games = this.parseGames(this.lines);
     const gamesWithMaxCounts = this.getMaxCounts(games);
     const powers = gamesWithMaxCounts.map(
       ({ maxCounts }) => maxCounts.red * maxCounts.green * maxCounts.blue
     );
-    console.log(`Solution: ${calcSum(powers)}`);
+    return calcSum(powers);
   }
 
   private isGameValidWithLoad(

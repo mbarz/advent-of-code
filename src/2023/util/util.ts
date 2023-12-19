@@ -1,10 +1,7 @@
 import * as fs from 'fs';
 
-export function readTextFileLines(day: number, sub?: string): string[] {
-  const name = `input-${String(day).padStart(2, '0')}`;
-  const ext = 'txt';
-  const fileName = [name, sub, ext].filter((n) => !!n).join('.');
-  return fs.readFileSync(`${__dirname}/${fileName}`, 'utf-8').split('\n');
+export function readTextFile(filePath: string): string[] {
+  return fs.readFileSync(filePath, 'utf-8').split('\n');
 }
 
 export function writeTextFileLines(

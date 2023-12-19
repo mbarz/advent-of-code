@@ -1,29 +1,23 @@
-import { calcSum } from './util';
+import { Solver } from '../util/solver';
+import { calcSum } from '../util/util';
 
-export class AdventOfCode2023Day03 {
+export class AdventOfCode2023Day03 implements Solver {
   width: number;
   height: number;
 
-  constructor(private readonly lines: string[]) {
-    this.width = lines[0].length;
-    this.height = lines.length;
-  }
+  private readonly lines: string[];
 
-  run() {
-    console.log('Welcome to Advent of Code 2023 - Day 3\n');
-    this.solvePart1();
-    this.solvePart2();
+  constructor(input: string) {
+    this.lines = input.split('\n');
+    this.width = this.lines[0].length;
+    this.height = this.lines.length;
   }
 
   solvePart1() {
-    console.log('Solving part 1...');
     const all = this.getNumbers()
       .filter((n) => this.hasSpecialCharacterNearby(n))
       .map((n) => n.value);
     const solution = calcSum(all);
-    console.log(
-      `Sum of all numbers with special character nearby: ${solution}`
-    );
     return solution;
   }
 
@@ -58,19 +52,14 @@ export class AdventOfCode2023Day03 {
     for (let y = startY; y <= endY; y++) {
       for (let x = startX; x <= endX; x++) {
         const char = this.lines[y][x];
-        if (char.match(/[^\d\.]/)) return true;
+        if (char.match(/[^\d.]/)) return true;
       }
     }
     return false;
   }
 
   solvePart2() {
-    console.log('Solving part 2...');
-    const solution = calcSum(this.getGears().map((g) => g.ratio));
-    console.log(
-      `Sum of all numbers with special character nearby: ${solution}`
-    );
-    return solution;
+    return calcSum(this.getGears().map((g) => g.ratio));
   }
 
   getGears(): {

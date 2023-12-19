@@ -1,4 +1,4 @@
-import { Solver } from './solver';
+import { Solver } from '../util/solver';
 
 type Range = {
   start: number;
@@ -20,11 +20,12 @@ type Almanach = {
   }[];
 };
 
-export class AdventOfCode2023Day05 extends Solver {
+export class AdventOfCode2023Day05 implements Solver {
+  lines: string[];
   almanach: Almanach;
 
-  constructor(sub?: string) {
-    super(5, sub);
+  constructor(input: string) {
+    this.lines = input.split('\n');
     this.almanach = this.readAlmanach();
   }
 

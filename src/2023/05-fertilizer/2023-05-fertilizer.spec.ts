@@ -1,10 +1,13 @@
+import { readFileSync } from 'fs';
 import { AdventOfCode2023Day05 } from './2023-05-fertilizer';
 
 describe('2023 - Day 5: If You Give A Seed A Fertilizer', () => {
   let solver: AdventOfCode2023Day05;
 
   beforeEach(() => {
-    solver = new AdventOfCode2023Day05('test');
+    solver = new AdventOfCode2023Day05(
+      readFileSync(__dirname + '/input-05.test.txt', 'utf-8')
+    );
   });
 
   it('should solve part 1', () => {

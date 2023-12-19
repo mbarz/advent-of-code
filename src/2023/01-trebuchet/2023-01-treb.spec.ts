@@ -1,7 +1,10 @@
+import { readFileSync } from 'fs';
 import { AdventOfCode2023Day01 } from './2023-01-trebuchet';
 
 describe('2023-01 Trebuchet', () => {
-  const solver = new AdventOfCode2023Day01();
+  const solver = new AdventOfCode2023Day01(
+    readFileSync(__dirname + '/input-01.test1.txt', 'utf-8')
+  );
 
   it.each([
     ['1', '1', 1],

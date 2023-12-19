@@ -1,40 +1,31 @@
-import { calcSum, readTextFileLines } from './util';
+import { Solver } from '../util/solver';
+import { calcSum } from '../util/util';
 
 type SearchTerm = {
   s: string;
   n: number;
 };
 
-export class AdventOfCode2023Day01 {
-  run() {
-    console.log('Welcome to Advent of Code 2023 - Day 1\n');
-
-    this.solvePart1();
-    this.solvePart2();
+export class AdventOfCode2023Day01 implements Solver {
+  private lines: string[];
+  constructor(input: string) {
+    this.lines = input.split('\n');
   }
 
   solvePart2() {
-    console.log('Solving part 2...');
-    const lines = readTextFileLines(1);
-    const calibrationValues = lines.map((line) =>
+    const calibrationValues = this.lines.map((line) =>
       this.getPart2CalibrationValueForLine(line)
     );
-    this.logValues(calibrationValues);
-    const sum = calcSum(calibrationValues);
-    // 54094 is the correct value
-    console.log(`The sum of all calibration values is ${sum}\n`);
+    // this.logValues(calibrationValues);
+    return calcSum(calibrationValues);
   }
 
   solvePart1() {
-    console.log('Solving part 1...');
-    const lines = readTextFileLines(1);
-    const calibrationValues = lines.map((line) =>
+    const calibrationValues = this.lines.map((line) =>
       this.getPart1CalibrationValueForLine(line)
     );
-    this.logValues(calibrationValues);
-    const sum = calcSum(calibrationValues);
-    // Correct solution is 54968
-    console.log(`The sum of all calibration values is ${sum}\n`);
+    // this.logValues(calibrationValues);
+    return calcSum(calibrationValues);
   }
 
   logValues(calibrationValues: number[]) {

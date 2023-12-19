@@ -1,4 +1,4 @@
-import { Solver } from './solver';
+import { Solver } from '../util/solver';
 
 type Hand = {
   cards: string;
@@ -22,12 +22,12 @@ const VALUES = [
   'A',
 ];
 
-export class AdventOfCode2023Day07 extends Solver {
+export class AdventOfCode2023Day07 implements Solver {
   hands: Hand[] = [];
 
-  constructor(sub?: string) {
-    super(7, sub);
-    this.hands = this.lines
+  constructor(input: string) {
+    this.hands = input
+      .split('\n')
       .map((l) => l.split(' '))
       .map(([a, b]) => ({ cards: a, bid: +b }));
   }

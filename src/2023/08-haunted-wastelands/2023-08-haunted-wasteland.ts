@@ -1,13 +1,15 @@
-import { Solver } from './solver';
+import { Solver } from '../util/solver';
 
 type Instruction = 'L' | 'R';
 
-export class AdventOfCode2023Day08 extends Solver {
+export class AdventOfCode2023Day08 implements Solver {
   instructions: Instruction[] = [];
   network: Record<string, { L: string; R: string }>;
 
-  constructor(sub?: string) {
-    super(8, sub);
+  lines: string[];
+
+  constructor(input: string) {
+    this.lines = input.split('\n');
     const { instructions, network } = this.parseMap();
     this.instructions = instructions;
     this.network = network;

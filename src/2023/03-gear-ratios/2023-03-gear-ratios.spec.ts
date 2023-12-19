@@ -1,11 +1,13 @@
+import { readFileSync } from 'fs';
 import { AdventOfCode2023Day03 } from './2023-03-gear-ratios';
-import { readTextFileLines } from './util';
 
 describe('2023 - Day 3', () => {
   let solver: AdventOfCode2023Day03;
 
   beforeEach(() => {
-    solver = new AdventOfCode2023Day03(readTextFileLines(3, 'test'));
+    solver = new AdventOfCode2023Day03(
+      readFileSync(__dirname + '/input-03.test.txt', 'utf-8')
+    );
   });
 
   it('should solve part 1 for test input', () => {

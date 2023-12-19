@@ -1,10 +1,12 @@
-import { sum } from '../util/sum';
-import { Solver } from './solver';
-import { parseNumbers } from './util';
+import { sum } from '../../util/sum';
+import { Solver } from '../util/solver';
+import { parseNumbers } from '../util/util';
 
-export class AdventOfCode2023Day09 extends Solver {
-  constructor(sub?: string) {
-    super(9, sub);
+export class AdventOfCode2023Day09 implements Solver {
+
+  lines: string[]
+  constructor(input: string) {
+    this.lines = input.split('\n');
   }
 
   solvePart1(): number {

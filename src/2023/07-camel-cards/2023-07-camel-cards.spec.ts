@@ -1,9 +1,15 @@
+import { readFileSync } from 'fs';
 import { AdventOfCode2023Day07 } from './2023-07-camel-cards';
 
 describe('2023 - Day 7 - Camel Cards', () => {
   let solver: AdventOfCode2023Day07;
 
-  beforeEach(() => (solver = new AdventOfCode2023Day07('test')));
+  beforeEach(
+    () =>
+      (solver = new AdventOfCode2023Day07(
+        readFileSync(__dirname + '/input-07.test.txt', 'utf-8')
+      ))
+  );
 
   it('should solve part 1', () => {
     expect(solver.solvePart1()).toEqual(6440);

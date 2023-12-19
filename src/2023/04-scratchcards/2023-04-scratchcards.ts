@@ -1,4 +1,5 @@
-import { calcSum } from './util';
+import { Solver } from '../util/solver';
+import { calcSum } from '../util/util';
 
 type Card = {
   cardNumber: number;
@@ -6,26 +7,13 @@ type Card = {
   right: number[];
 };
 
-export class AdventOfCode2023Day04 {
+export class AdventOfCode2023Day04 implements Solver {
   cards: Card[] = [];
 
-  constructor(lines: string[]) {
-    this.cards = lines.map((line) => this.readCard(line));
+  constructor(input: string) {
+    this.cards = input.split('\n').map((line) => this.readCard(line));
   }
 
-  run() {
-    console.log('Welcome to Advent of Code 2023 - Day 4\n');
-    console.log('Solving part 1...');
-    console.time('Part1');
-    const part1 = this.solvePart1();
-    console.timeEnd('Part1');
-    console.log(`Solution: ${part1}`);
-    console.log('Solving part 2...');
-    console.time('Part2');
-    const part2 = this.solvePart2Linear();
-    console.timeEnd('Part2');
-    console.log(`Solution: ${part2}`);
-  }
   solvePart1() {
     return calcSum(this.cards.map((card) => this.getPoints(card)));
   }

@@ -1,13 +1,13 @@
+import { readFileSync } from 'fs';
 import { AdventOfCode2023Day04 } from './2023-04-scratchcards';
-import { readTextFileLines } from './util';
 
 describe('2023 Day 04', () => {
-  let lines: string[];
+  let input: string;
   let solver: AdventOfCode2023Day04;
 
   beforeEach(() => {
-    lines = readTextFileLines(4, 'test');
-    solver = new AdventOfCode2023Day04(lines);
+    input = readFileSync(__dirname + '/input-04.test.txt', 'utf-8');
+    solver = new AdventOfCode2023Day04(input);
   });
 
   it('should solve part 1 for test data', () => {
@@ -15,6 +15,7 @@ describe('2023 Day 04', () => {
   });
 
   it('should get winning cards', () => {
+    const lines = input.split('\n');
     expect(solver.readCard(lines[0])).toEqual({
       cardNumber: 1,
       left: [41, 48, 83, 86, 17],

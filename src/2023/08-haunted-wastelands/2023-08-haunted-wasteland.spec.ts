@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import { AdventOfCode2023Day08 } from './2023-08-haunted-wasteland';
 
 describe('2023 - Day 8 - Haunted Wasteland', () => {
@@ -21,6 +22,8 @@ describe('2023 - Day 8 - Haunted Wasteland', () => {
   });
 });
 
-function createSolver(input?: string) {
-  return new AdventOfCode2023Day08(input);
+function createSolver(input: string) {
+  return new AdventOfCode2023Day08(
+    readFileSync(__dirname + `/input-08.${input}.txt`, 'utf-8')
+  );
 }
