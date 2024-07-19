@@ -7,7 +7,7 @@ async function main() {
   const dayLabel = String(day).padStart(2, '0');
 
   const puzzleDescription = await fetch(
-    'https://adventofcode.com/2023/day/12',
+    `https://adventofcode.com/2023/day/${day}`,
   ).then((res) => res.text());
   const name = puzzleDescription.match(/--- Day \d+: (.+) ---/)![1];
   const label = name

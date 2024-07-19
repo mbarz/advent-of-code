@@ -12,6 +12,7 @@ import { AdventOfCode2023Day10 } from './10-pipe-maze/2023-10-pipe-maze';
 import { AdventOfCode2023Day11 } from './11-cosmic-expansion/2023-11-cosmic-expansion';
 import { AdventOfCode2023Day12 } from './12-hot-springs/2023-12-hot-springs';
 import { AdventOfCode2023Day13 } from './13-point-of-indipendence/2023-13-point-of-indi';
+import { AdventOfCode2023Day14 } from './14-parabolic-reflector-dish/2023-14-parabolic-reflector-dish';
 import { getArg } from './util/solver';
 
 const file = (n: number) => {
@@ -45,6 +46,7 @@ const solvers = [
   () => new AdventOfCode2023Day11(file(11)),
   () => new AdventOfCode2023Day12(file(12)),
   () => new AdventOfCode2023Day13(file(13)),
+  () => new AdventOfCode2023Day14(file(14)),
 ];
 
 run(getArg('-d') ?? 10);
