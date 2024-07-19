@@ -29,3 +29,18 @@ export function parseNumbers(
 ) {
   return given.split(seperator).map((s) => +s);
 }
+
+export function rotate2D<D = unknown>(given: D[][]): D[][] {
+  const w = given[0].length;
+  const h = given.length;
+
+  const target: D[][] = Array(w)
+    .fill(0)
+    .map(() => Array(h).fill(undefined));
+  for (let x = 0; x < w; ++x) {
+    for (let y = 0; y < h; ++y) {
+      target[x][y] = given[h - y - 1][x];
+    }
+  }
+  return target;
+}

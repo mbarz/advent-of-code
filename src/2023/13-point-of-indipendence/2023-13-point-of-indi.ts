@@ -1,4 +1,5 @@
 import { Solver } from '../util/solver';
+import { rotate2D } from '../util/util';
 
 export class AdventOfCode2023Day13 implements Solver {
   patterns: string[][];
@@ -103,14 +104,7 @@ export function findHorizontalMirror(pattern: string[]): number | undefined {
 }
 
 export function rotatePattern(pattern: string[]): string[] {
-  return Array(pattern[0].length)
-    .fill('')
-    .map((_a, x) =>
-      Array(pattern.length)
-        .fill(0)
-        .map((_b, y) => pattern[y][x])
-        .join(''),
-    );
+  return rotate2D(pattern.map((l) => l.split(''))).map((l) => l.join(''));
 }
 
 export function findVerticalMirror(pattern: string[]): number | undefined {
