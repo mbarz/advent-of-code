@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "2023": "ts-node src/2023/run.ts"
   },
   "repository": {
     "type": "git",
