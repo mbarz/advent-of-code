@@ -13,6 +13,7 @@ import { AdventOfCode2023Day11 } from './11-cosmic-expansion/2023-11-cosmic-expa
 import { AdventOfCode2023Day12 } from './12-hot-springs/2023-12-hot-springs';
 import { AdventOfCode2023Day13 } from './13-point-of-indipendence/2023-13-point-of-indi';
 import { AdventOfCode2023Day14 } from './14-parabolic-reflector-dish/2023-14-parabolic-reflector-dish';
+import { AdventOfCode2023Day15 } from './15-lens-library/2023-15-lens-library';
 import { getArg } from './util/solver';
 
 const file = (n: number) => {
@@ -47,9 +48,10 @@ const solvers = [
   () => new AdventOfCode2023Day12(file(12)),
   () => new AdventOfCode2023Day13(file(13)),
   () => new AdventOfCode2023Day14(file(14)),
+  () => new AdventOfCode2023Day15(file(15)),
 ];
 
-run(getArg('-d') ?? 10);
+run(getArg('-d') ?? solvers.length);
 
 export function run(day: number) {
   const solver = solvers[day - 1]();
