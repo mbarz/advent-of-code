@@ -1,6 +1,8 @@
 import { Solver } from '../util/solver';
 import { rotate2D } from '../util/util';
 
+const DEBUG = false;
+
 export class AdventOfCode2023Day14 implements Solver {
   platform: string[][];
 
@@ -27,15 +29,14 @@ export class AdventOfCode2023Day14 implements Solver {
 
       const seenAt = history.indexOf(current);
       if (seenAt >= 0) {
-        console.log();
         const loopLength = i - seenAt;
         const remaining = n - i;
         const rest = remaining % loopLength;
-        console.log(
-          `already saw ${i} at ${seenAt}`,
-          `loop length = ${loopLength}`,
-          `remaining ${remaining}, so the result is current + ${rest}`,
-        );
+        if (DEBUG) {
+          console.log(
+            `already saw ${i} at ${seenAt}, loop length = ${loopLength}, remaining ${remaining}, so the result is current + ${rest}`,
+          );
+        }
         this.spinCycles(rest - 1);
         return;
       } else {

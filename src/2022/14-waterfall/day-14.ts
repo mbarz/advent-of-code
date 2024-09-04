@@ -1,3 +1,5 @@
+import { Logger } from '../../util/logger';
+
 export type Solid = {
   kind: 'stone' | 'sand';
   x: number;
@@ -8,6 +10,9 @@ export type Cave = {
   map: Record<string, string>;
   floor: number;
 };
+
+const logger = new Logger();
+logger.logLevel = 'warn';
 
 export function scanCave(input: string): Cave {
   const lines = input.split('\n');
@@ -92,11 +97,11 @@ export function drawCave(cave: Cave) {
 
   const map = Array.from({ length: maxY - minY + 1 }, (_row, y) =>
     Array.from({ length: maxX - minX + 1 }, (_col, x) =>
-      getCaveElement(cave, minX + x, minY + y)
-    )
+      getCaveElement(cave, minX + x, minY + y),
+    ),
   );
 
-  console.log(map.map((l) => l.join('')).join('\n'));
+  logger.log(map.map((l) => l.join('')).join('\n'));
 }
 
 export function fillUntilAbyss(cave: Cave, x: number) {

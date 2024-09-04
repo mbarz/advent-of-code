@@ -1,3 +1,5 @@
+import { Logger } from '../../util/logger';
+
 type Point = {
   x: number;
   y: number;
@@ -10,11 +12,13 @@ type State = {
   visitedByTail: Point[];
 };
 
+const logger = new Logger('', 'warn');
+
 export function state(
   opts: {
     start?: Point;
     knotCount?: number;
-  } = {}
+  } = {},
 ): State {
   const { start = { x: 0, y: 0 }, knotCount = 2 } = opts;
   const head = start;
@@ -92,11 +96,11 @@ export function paintState(state: State, [w, h]: [number, number]) {
   });
   map[state.start.y][state.start.x] = 's';
   map[state.head.y][state.head.x] = 'H';
-  console.log(
+  logger.log(
     map
       .map((line) => line.join(''))
       .reverse()
-      .join('\n')
+      .join('\n'),
   );
 }
 
@@ -118,10 +122,10 @@ export function paintVisitedByTail(state: State) {
   }
 
   state.visitedByTail.forEach((p) => paintPoint(p, '#'));
-  console.log(
+  logger.log(
     map
       .map((line) => line.join(''))
       .reverse()
-      .join('\n')
+      .join('\n'),
   );
 }

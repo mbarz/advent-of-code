@@ -3,7 +3,7 @@ import { AdventOfCode2023Day01 } from './2023-01-trebuchet';
 
 describe('2023-01 Trebuchet', () => {
   const solver = new AdventOfCode2023Day01(
-    readFileSync(__dirname + '/input-01.test1.txt', 'utf-8')
+    readFileSync(__dirname + '/input-01.test1.txt', 'utf-8'),
   );
 
   it.each([
@@ -13,7 +13,7 @@ describe('2023-01 Trebuchet', () => {
     ['tmczplnmrsevenhmhprtllcktpr8eight9', 'seven', 7],
   ])('should find first number in %s', (target, word, value) => {
     const res = solver.findFirst(target);
-    if (res == null) return fail('no match');
+    if (res == null) throw new Error('no match');
     const { n, s } = res;
     expect(s).toEqual(word);
     expect(n).toEqual(value);
@@ -28,7 +28,7 @@ describe('2023-01 Trebuchet', () => {
     ['seven7rsbqpgxtjzsgxssix', 'six', 6],
   ])('should find last number in %s', (target, word, value) => {
     const res = solver.findLast(target);
-    if (res == null) return fail('no match');
+    if (res == null) throw new Error('no match');
     const { n, s } = res;
     expect(s).toEqual(word);
     expect(n).toEqual(value);

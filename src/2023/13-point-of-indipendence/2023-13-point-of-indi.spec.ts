@@ -1,6 +1,8 @@
 import { readFileSync } from 'fs';
 import {
   AdventOfCode2023Day13,
+  findHorizontalMirror,
+  findVerticalMirror,
   isLineMirroredAt,
   isPatternHorizontallyMirroredAt,
   rotatePattern,
@@ -24,7 +26,11 @@ describe('2023 Day 13: Point of Incidence', () => {
 ..##..###
 #....#..#`;
 
-  const solver = new AdventOfCode2023Day13(testInput);
+  let solver = new AdventOfCode2023Day13(testInput);
+
+  beforeEach(() => {
+    solver = new AdventOfCode2023Day13(testInput);
+  });
 
   it('should parse patterns', () => {
     const patterns = solver.parsePatterns(testInput);
@@ -61,7 +67,46 @@ describe('2023 Day 13: Point of Incidence', () => {
     expect(solver.togglePixel(['##', '##'], 3)).toEqual(['##', '#.']);
   });
 
-  it('should get value for pattern', () => {
+  it.skip('should rotate', () => {
+    const pattern = [
+      '..##..##.',
+      '..#.##.#.',
+      '##......#',
+      '##......#',
+      '..#.##.#.',
+      '..##..##.',
+      '#.#.##.#.',
+    ];
+
+    expect(rotatePattern(pattern)).toEqual([
+      '#..##..',
+      '...##..',
+      '###..##',
+      '.#....#',
+      '#.#..#.',
+      '#.#..#.',
+      '.#....#',
+      '###..##',
+      '...##..',
+    ]);
+  });
+
+  it('should find mirrors', () => {
+    const pattern = [
+      '..##..##.',
+      '..#.##.#.',
+      '##......#',
+      '##......#',
+      '..#.##.#.',
+      '..##..##.',
+      '#.#.##.#.',
+    ];
+
+    expect(findHorizontalMirror(pattern)).toEqual(5);
+    expect(findVerticalMirror(pattern)).toEqual(3);
+  });
+
+  it('should get values for pattern', () => {
     expect(
       solver.getReflectionValues([
         '..##..##.',
@@ -81,15 +126,18 @@ describe('2023 Day 13: Point of Incidence', () => {
   });
 
   it('should get value without smudge for specific pattern', () => {
-    const pattern = rotatePattern([
-      '####..######.',
-      '....#.......#',
-      '.##.#........',
-      '####.########',
-      '#####.##..##.',
-      '....#.#....#.',
-      '#..#....##...',
-    ]);
+    const pattern = rotatePattern(
+      [
+        '####..######.',
+        '....#.......#',
+        '.##.#........',
+        '####.########',
+        '#####.##..##.',
+        '....#.#....#.',
+        '#..#....##...',
+      ],
+      'clockwise',
+    );
     const withSmudge = solver.getReflectionValue(pattern);
     const value = solver.getRealReflectionValue(pattern);
     expect(withSmudge).toEqual(200);

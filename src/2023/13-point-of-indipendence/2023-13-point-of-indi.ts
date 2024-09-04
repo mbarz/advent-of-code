@@ -103,8 +103,13 @@ export function findHorizontalMirror(pattern: string[]): number | undefined {
   return undefined;
 }
 
-export function rotatePattern(pattern: string[]): string[] {
-  return rotate2D(pattern.map((l) => l.split(''))).map((l) => l.join(''));
+export function rotatePattern(
+  pattern: string[],
+  direction: 'clockwise' | 'counter-clockwise' = 'counter-clockwise',
+): string[] {
+  const asArray = pattern.map((l) => l.split(''));
+  const rotated = rotate2D(asArray, direction);
+  return rotated.map((l) => l.join(''));
 }
 
 export function findVerticalMirror(pattern: string[]): number | undefined {

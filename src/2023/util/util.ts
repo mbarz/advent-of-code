@@ -30,7 +30,14 @@ export function parseNumbers(
   return given.split(seperator).map((s) => +s);
 }
 
-export function rotate2D<D = unknown>(given: D[][]): D[][] {
+export function rotate2D<D = unknown>(
+  given: D[][],
+  direction: 'clockwise' | 'counter-clockwise' = 'clockwise',
+): D[][] {
+  if (direction === 'counter-clockwise') {
+    return rotate2D(rotate2D(rotate2D(given)));
+  }
+
   const w = given[0].length;
   const h = given.length;
 
