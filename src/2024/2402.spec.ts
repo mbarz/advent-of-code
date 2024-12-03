@@ -7,7 +7,7 @@ const exampleInput = `7 6 4 2 1
 8 6 4 4 1
 1 3 6 7 9`;
 
-describe('2024-01', () => {
+describe('2024-12-02', () => {
   [
     ['7 6 4 2 1', 'Safe'],
     ['1 2 7 8 9', 'Unsafe'],

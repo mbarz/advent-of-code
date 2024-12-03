@@ -6,12 +6,6 @@ type Solver = {
   solvePart2?: (input: string) => number;
 };
 
-// SOLUTIONS:
-// 01 - Part 1: 1938424
-// 01 - Part 2: 22014209
-// 02 - Part 1: 369
-// 02 - Part 2: 428
-
 const date = new Date().getDate();
 solveDate(date);
 
@@ -24,10 +18,22 @@ async function solveDate(date: number) {
     join(__dirname, `24${day}-puzzle-input.txt`),
     'utf-8',
   );
-  console.log(`Day ${day}: Part 1`);
-  console.log(solver.solvePart1(input));
+
+  const start1 = Date.now();
+
+  const res1 = solver.solvePart1(input);
+  console.log(`Day ${day}: Part 1: ${yellow(res1)} (${Date.now() - start1}ms)`);
+
   if (solver.solvePart2 != null) {
-    console.log(`Day ${day}: Part 2`);
-    console.log(solver.solvePart2(input));
+    const start2 = Date.now();
+    console.log(
+      `Day ${day}: Part 2: ${yellow(solver.solvePart2(input))} (${
+        Date.now() - start2
+      }ms)`,
+    );
   }
+}
+
+function yellow(s: string | number) {
+  return `\x1b[33m${s}\x1b[0m`;
 }
