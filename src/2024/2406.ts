@@ -82,7 +82,7 @@ export function findObstaclesForLoop(input: string): string[] {
     const altMap = addObstacle(lines, next);
     if (
       !checked.includes(`${next.x},${next.y}`) &&
-      isLoop(altMap, start, 'up', [])
+      isLoop(altMap, pos, direction, [...visited])
     ) {
       findings.push(`${next.x},${next.y}`);
     }
