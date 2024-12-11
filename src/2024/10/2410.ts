@@ -1,4 +1,4 @@
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 
 function coordsOf(arr: number[][]): { y: number; x: number }[] {
   return arr

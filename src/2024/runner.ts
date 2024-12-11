@@ -10,12 +10,10 @@ const date = new Date().getDate();
 solveDate(date);
 
 async function solveDate(date: number) {
-  const solver: Solver = await import(
-    `./24${date.toString().padStart(2, '0')}`
-  );
-  const day = String(date).padStart(2, '0');
+  const day = date.toString().padStart(2, '0');
+  const solver: Solver = await import(`./${day}/24${day}`);
   const input = readFileSync(
-    join(__dirname, `24${day}-puzzle-input.txt`),
+    join(__dirname, `${day}/24${day}-puzzle-input.txt`),
     'utf-8',
   );
 

@@ -4,10 +4,12 @@
   "description": "advent of code",
   "main": "index.js",
   "scripts": {
+    "2023": "ts-node src/2023/run.ts",
     "test": "jest",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "2023": "ts-node src/2023/run.ts"
+    "new": "ts-node src/new.ts",
+    "today": "ts-node src/2024/runner.ts"
   },
   "repository": {
     "type": "git",
@@ -32,6 +34,7 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
-    "chalk": "^4.1.2"
+    "chalk": "^4.1.2",
+    "commander": "^12.1.0"
   }
 }
