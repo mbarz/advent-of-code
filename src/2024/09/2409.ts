@@ -1,4 +1,4 @@
-import { swap } from '../util/array';
+import { swap } from '../../util/array';
 
 type Byte = number | null;
 export type Segment = { pos: number; size: number };

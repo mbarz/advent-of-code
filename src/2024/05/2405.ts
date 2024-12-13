@@ -1,4 +1,4 @@
-import { sum } from '../util/sum';
+import { sum } from '../../util/sum';
 
 type Rule = [number, number];
 type Update = number[];

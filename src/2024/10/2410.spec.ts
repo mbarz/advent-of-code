@@ -1,4 +1,4 @@
-import { solvePart1, solvePart2 } from '../2410';
+import { solvePart1, solvePart2 } from './2410';
 
 const input = [
   '89010123',
