@@ -1,4 +1,11 @@
-import { expand, next, parse, solvePart1, solvePart2 } from './2415';
+import {
+  expand,
+  moveIfPossible,
+  next,
+  parse,
+  solvePart1,
+  solvePart2,
+} from './2415';
 
 const smallExample = `########
 #..O.O.#
@@ -144,6 +151,20 @@ describe('2024 Day 15', () => {
       '##..........##',
       '##############',
     ]);
+
+    while (instructions.length) {
+      next(map, instructions.shift()!);
+    }
+
+    expect(map.map((l) => l.join(''))).toEqual([
+      '##############',
+      '##...[].##..##',
+      '##...@.[]...##',
+      '##....[]....##',
+      '##..........##',
+      '##..........##',
+      '##############',
+    ]);
   });
 
   it('should solve part 1 for small example', () => {
@@ -154,7 +175,92 @@ describe('2024 Day 15', () => {
     expect(solvePart1(bigExample)).toEqual(10092);
   });
 
+  it('should move one up', () => {
+    const map = `####################
+##....[]....[]..[]##
+##............[]..##
+##..[][]....[]..[]##
+##...[]...[]..[]..##
+##[]##....[]......##
+##[]..........[]..##
+##..[][]...[].[][]##
+##...@....[]......##
+####################`
+      .split('\n')
+      .map((l) => l.split(''));
+
+    expect(map[8][5]).toEqual('@');
+    // expect(canMove(map, [8, 5], [-1, 0])).toEqual(true);
+    moveIfPossible(map, [8, 5], [-1, 0]);
+    expect(map[8][5]).not.toEqual('@');
+  });
+
   it('should solve part 2', () => {
-    expect(solvePart2('')).toEqual(0);
+    const parsed = parse(bigExample);
+    const map = expand(parsed.map);
+    const instructions = parsed.instructions;
+
+    expect(map.map((l) => l.join(''))).toEqual([
+      '####################',
+      '##....[]....[]..[]##',
+      '##............[]..##',
+      '##..[][]....[]..[]##',
+      '##....[]@.....[]..##',
+      '##[]##....[]......##',
+      '##[]....[]....[]..##',
+      '##..[][]..[]..[][]##',
+      '##........[]......##',
+      '####################',
+    ]);
+    console.log(instructions.length);
+    for (let i = 0; i < 32; ++i) {
+      const inst = instructions.shift()!;
+      // console.log(inst);
+      next(map, inst);
+    }
+    expect(map.map((l) => l.join(''))).toEqual([
+      '####################',
+      '##....[]....[]..[]##',
+      '##............[]..##',
+      '##..[][]....[]..[]##',
+      '##...[]...[]..[]..##',
+      '##[]##....[]......##',
+      '##[]..........[]..##',
+      '##..[][]...[].[][]##',
+      '##...@....[]......##',
+      '####################',
+    ]);
+    // console.log(instructions[0]);
+    next(map, instructions.shift()!);
+    expect(map.map((l) => l.join(''))).toEqual([
+      '####################',
+      '##....[]....[]..[]##',
+      '##............[]..##',
+      '##..[][]....[]..[]##',
+      '##...[]...[]..[]..##',
+      '##[]##....[]......##',
+      '##[][]........[]..##',
+      '##...@[]...[].[][]##',
+      '##........[]......##',
+      '####################',
+    ]);
+
+    while (instructions.length) {
+      next(map, instructions.shift()!);
+    }
+    expect(map.map((l) => l.join(''))).toEqual([
+      '####################',
+      '##[].......[].[][]##',
+      '##[]...........[].##',
+      '##[]........[][][]##',
+      '##[]......[]....[]##',
+      '##..##......[]....##',
+      '##..[]............##',
+      '##..@......[].[][]##',
+      '##......[][]..[]..##',
+      '####################',
+    ]);
+    expect(solvePart2(exampleC)).toEqual(618);
+    expect(solvePart2(bigExample)).toEqual(9021);
   });
 });
