@@ -37,3 +37,11 @@ export function findLast<T>(
 export function swap<T>(array: T[], i: number, j: number) {
   [array[i], array[j]] = [array[j], array[i]];
 }
+
+export function last<T>(arr: T[]) {
+  return arr[arr.length - 1];
+}
+
+export function atIndex<T>(arr: T[], i: number) {
+  return arr[arr.length - 1 - i];
+}
