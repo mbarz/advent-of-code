@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 type Solver = {
@@ -6,7 +6,11 @@ type Solver = {
   solvePart2?: (input: string) => number;
 };
 
-const date = new Date().getDate();
+const days = readdirSync(__dirname)
+  .filter((f) => f.match(/^\d{2}$/))
+  .map(Number);
+
+const date = Math.max(...days);
 solveDate(date);
 
 async function solveDate(date: number) {
