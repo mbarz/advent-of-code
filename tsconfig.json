@@ -3,7 +3,7 @@
     "forceConsistentCasingInFileNames": true,
     "preserveConstEnums": true,
     "resolveJsonModule": true,
-    "target": "ES6",
+    "target": "ES2020",
     "module": "CommonJS",
     "lib": ["ES5", "ES6"],
     "declaration": true,

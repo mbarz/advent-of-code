@@ -1,16 +1,23 @@
 import { program } from 'commander';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'fs';
+import { join } from 'path';
 import * as prettier from 'prettier';
 
 const now = new Date();
 
+const defaultYear =
+  now.getMonth() >= 11 ? now.getFullYear() : now.getFullYear() - 1;
+const days = readdirSync(join(__dirname, defaultYear.toString()))
+  .filter((f) => f.match(/^\d{2}$/))
+  .map(Number);
+
+program.option('-y, --year <year>', 'year', (y) => Number(y), defaultYear);
 program.option(
-  '-y, --year <year>',
-  'year',
-  (y) => Number(y),
-  now.getFullYear(),
+  '-d, --day <day>',
+  'day',
+  (d) => Number(d),
+  Math.max(...days, 0) + 1,
 );
-program.option('-d, --day <day>', 'day', (d) => Number(d), now.getDate());
 program.parse();
 const options = program.opts<{ year: number; day: number }>();
 const { year, day } = options;
