@@ -1,4 +1,13 @@
-import { solvePart1, solvePart2 } from './2423';
+import {
+  getConnectionMap,
+  getPairs,
+  grow,
+  growAll,
+  paulson,
+  solvePart1,
+  solvePart2,
+  withStack,
+} from './2423';
 
 const e1 = `kh-tc
 qp-kh
@@ -38,7 +47,58 @@ describe('2024 Day 23', () => {
     expect(solvePart1(e1)).toEqual(7);
   });
 
+  it('should get connections', () => {
+    const map = getConnectionMap(e1);
+    expect(map.size).toEqual(16);
+    expect(map.get('cg')).toEqual(['aq', 'de', 'tb', 'yn']);
+    expect(map.get('aq')).toEqual(['cg', 'vc', 'wq', 'yn']);
+  });
+
+  it('should grow', () => {
+    const map = getConnectionMap(e1);
+    expect(grow(['co'], map)).toEqual([
+      ['co', 'de'],
+      ['co', 'ka'],
+      ['co', 'ta'],
+      ['co', 'tc'],
+    ]);
+    expect(grow(['co', 'de'], map)).toEqual([
+      ['co', 'de', 'ka'],
+      ['co', 'de', 'ta'],
+    ]);
+    expect(grow(['co', 'de', 'ka'], map)).toEqual([['co', 'de', 'ka', 'ta']]);
+    expect(grow(['co', 'de', 'ka', 'ta'], map)).toEqual([]);
+    expect(
+      growAll(
+        [
+          ['co', 'de', 'ka'],
+          ['co', 'de', 'ta'],
+        ],
+        map,
+      ),
+    ).toEqual([['co', 'de', 'ka', 'ta']]);
+    expect(grow(['co', 'de', 'ka', 'ta'], map)).toEqual([]);
+    expect(growAll(getPairs(e1), map).length).toEqual(12);
+    expect(
+      growAll(
+        [
+          ['co', 'de', 'ka'],
+          ['ub', 'vc', 'wq'],
+        ],
+        map,
+      ),
+    ).toEqual([['co', 'de', 'ka', 'ta']]);
+  });
+
   it('should solve part 2', () => {
-    expect(solvePart2('')).toEqual(0);
+    expect(solvePart2(e1)).toEqual('co,de,ka,ta');
+  });
+
+  it('should solve part 2 with stack', () => {
+    expect(withStack(e1)).toEqual('co,de,ka,ta');
+  });
+
+  it('should solve part 2 with luck', () => {
+    expect(paulson(e1)).toEqual('co,de,ka,ta');
   });
 });
