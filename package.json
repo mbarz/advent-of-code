@@ -9,7 +9,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "new": "ts-node src/new.ts",
-    "today": "ts-node src/2024/runner.ts"
+    "today": "ts-node src/2025/runner.ts"
   },
   "repository": {
     "type": "git",
