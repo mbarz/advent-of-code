@@ -55,7 +55,7 @@ describe('2025 Day 1', () => {
     expect(solvePart1(exampleInput)).toEqual(3);
   });
 
-  it('should solve part 1', () => {
+  it('should solve part 2', () => {
     expect(solvePart2(exampleInput)).toEqual(6);
   });
 });
