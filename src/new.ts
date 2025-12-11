@@ -57,7 +57,7 @@ async function main() {
           expect(solvePart1('')).toEqual(0);
         });
 
-        it('should solve part 1', () => {
+        it('should solve part 2', () => {
           expect(solvePart2('')).toEqual(0);
         });
 
